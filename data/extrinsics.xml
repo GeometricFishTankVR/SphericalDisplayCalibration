@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<proj_0_Rmat type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>f</dt>
+  <data>
+    9.20944661e-002 -9.88910079e-001 -1.16514161e-001 7.98636138e-001
+    1.43243179e-001 -5.84518552e-001 5.94725966e-001 -3.92215103e-002
+    8.02971244e-001</data></proj_0_Rmat>
+<proj_0_Tvec type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>1</cols>
+  <dt>f</dt>
+  <data>
+    2.67276376e-001 3.54069382e-001 8.96213293e-001</data></proj_0_Tvec>
+<proj_1_Rmat type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>f</dt>
+  <data>
+    9.91264999e-001 -2.25609094e-002 1.29941046e-001 1.04537234e-001
+    7.35112727e-001 -6.69836760e-001 -8.04091692e-002 6.77569389e-001
+    7.31050074e-001</data></proj_1_Rmat>
+<proj_1_Tvec type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>1</cols>
+  <dt>f</dt>
+  <data>
+    -1.01912007e-001 5.37098229e-001 1.08474731e+000</data></proj_1_Tvec>
+<proj_2_Rmat type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>f</dt>
+  <data>
+    -2.51352131e-001 9.60085213e-001 1.22713365e-001 -7.56356478e-001
+    -1.15722865e-001 -6.43842518e-001 -6.03942871e-001 -2.54646242e-001
+    7.55253911e-001</data></proj_2_Rmat>
+<proj_2_Tvec type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>1</cols>
+  <dt>f</dt>
+  <data>
+    -1.22561626e-001 6.70638382e-001 1.10849762e+000</data></proj_2_Tvec>
+<sphere_pose type_id="opencv-matrix">
+  <rows>4</rows>
+  <cols>1</cols>
+  <dt>d</dt>
+  <data>
+    -6.7931577563285828e-002 1.6370160877704620e-001
+    3.4872140884399414e+000 1.5398461818695068e+000</data></sphere_pose>
+</opencv_storage>
