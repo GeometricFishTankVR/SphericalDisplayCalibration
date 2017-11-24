@@ -24,6 +24,9 @@ cc_cam = [cam_mat(1,3) cam_mat(2,3)];
 
 % ------ read from blob data ------ %
 N_PROJ = length(dir([DATA_DIR '\Proj*PairBlobData.xml']));
+if N_PROJ <= 0
+    error("Can't find blob data Proj*PairBlobData.xml");
+end
 x_cam = cell(1,N_PROJ);
 x_proj = cell(1,N_PROJ);
 

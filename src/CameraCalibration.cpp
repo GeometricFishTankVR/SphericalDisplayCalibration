@@ -10,7 +10,7 @@ namespace multi_proj_calib
 	{
 		bool found(false);
 		img_pts.clear();
-		
+
 		switch (m_pattern)
 		{
 		case CHECKER_BOARD:

@@ -33,7 +33,7 @@ namespace stereo_recon
 		vector<Point2f> p2_inliner;
 
 
-		for (int i = 0; i < m_num_trials; i++)
+		for (unsigned int i = 0; i < m_num_trials; i++)
 		{
 
 			vector<int> pts8_index(8);

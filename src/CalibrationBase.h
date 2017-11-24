@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 #include "global.h"
 
@@ -34,7 +35,7 @@ namespace multi_proj_calib
 		virtual ~CalibrationBase(){}
 		
 		//! calibration using cv function calibrateCamera()
-		bool calibrate(unsigned int frame_count);
+		bool calibrate(uint frame_count);
 
 		//! erase image that has reproj-err larger than pre-set threshold
 		bool clean(float maxReprojectionError = 1.f);
@@ -45,20 +46,24 @@ namespace multi_proj_calib
 		//! undistort Input&Output img using lens parameter
 		void undistortImage(cv::Mat& img);
 
-		void resetData();
-		
 		//! remove 2d-3d correspondence
 		void remove(int index);
 
-		void setImageParams(unsigned int width, unsigned int height);
+		void resetData();
 
-		void setFrameCount(unsigned int total_frame = 20, unsigned int min_calib_frame = 6);
+		void printIntrinsics();
+
+		void drawDetectedPattern(cv::Mat& img, const std::vector<cv::Point2f>& pattern_pts, cv::Size pattern_size);
+
+		void setImageParams(uint width, uint height);
+
+		void setFrameCount(uint total_frame = 20, uint min_calib_frame = 6);
 
 		void setPatternParams(CalibrationPattern pattern, int pattern_width = 8, int pattern_height = 6, int square_size = 1);
 
-		unsigned int currFrame() { return m_obj_pts.size(); }
-		unsigned int getTotalFrame() const { return m_total_frame; }
-		unsigned int getMinCalibFrame() const { return m_mincalib_frame; }
+		uint currFrame() { return m_obj_pts.size(); }
+		uint getTotalFrame() const { return m_total_frame; }
+		uint getMinCalibFrame() const { return m_mincalib_frame; }
 
 		float getReprojectionError() const { return m_reproj_err; }
 		float getReprojectionError(int i) const { return m_perview_err[i]; }
@@ -69,9 +74,8 @@ namespace multi_proj_calib
 		const cv::Mat getCameraMatrix() const { return m_cam_mat; }  
 		const cv::Mat getDistortCoeff() const { return m_dist_coeff; } 
 
-		//! intrinsic matrix update: call after parameter refinement
 		void updateCameraMatrix(const cv::Mat& new_cam_mat)  {  m_cam_mat = new_cam_mat.clone(); }
-		//! lens distortion update: call after parameter refinement
+
 		void updateDistortCoeff(const cv::Mat& new_dist)  {  m_dist_coeff = new_dist.clone();  }
 
 		void saveCalibParams(const std::string& file_name);
@@ -94,9 +98,9 @@ namespace multi_proj_calib
 		cv::Size m_pattern_size;
 		cv::Size m_img_size;
 
-		unsigned int m_total_frame;
-		unsigned int m_mincalib_frame;
-		unsigned int m_square_size;
+		uint m_total_frame;
+		uint m_mincalib_frame;
+		uint m_square_size;
 
 		std::vector<std::vector<cv::Point2f>> m_img_pts;
 		std::vector<std::vector<cv::Point3f>> m_obj_pts;

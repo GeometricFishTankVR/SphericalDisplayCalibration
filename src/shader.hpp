@@ -20,6 +20,8 @@
 #include <GL/glew.h>
 #include <glfw/glfw3.h>
 
+#include "global.h"
+
 namespace multi_proj_calib
 {
 	class Shader {
@@ -33,19 +35,19 @@ namespace multi_proj_calib
 			glDeleteProgram(m_programID);		
 		}
 
-		int init(const char * vertex_file_path, const char * fragment_file_path, int num_uniforms);
+		int init(const std::string& vertex_file_path, const std::string& fragment_file_path, int num_uniforms);
 
 		void loadUniformLocation(const GLchar *uniform_name, int uniform_index) { m_uniformID[uniform_index] = glGetUniformLocation(m_programID, uniform_name); }
 
-		GLuint getUniformID(unsigned int attrib_index) { return m_uniformID[attrib_index]; }
+		GLuint getUniformID(uint attrib_index) { return m_uniformID[attrib_index]; }
 
 		void useShader() { glUseProgram(m_programID); }
 
 	private:
-		int loadShaders(const char * vertex_file_path, const char * fragment_file_path);
+		int loadShaders(const std::string&  vertex_file_path, const std::string&  fragment_file_path);
 
 		GLuint m_programID;
-		unsigned int m_num_uniforms;
+		uint m_num_uniforms;
 		std::vector<GLuint> m_uniformID;
 	};
 }

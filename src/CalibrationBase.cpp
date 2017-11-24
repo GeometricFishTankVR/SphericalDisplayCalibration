@@ -7,7 +7,7 @@ namespace multi_proj_calib
 	using std::cout;
 	using std::endl;
 
-	bool CalibrationBase::calibrate(unsigned int frame_count)
+	bool CalibrationBase::calibrate(uint frame_count)
 	{
 		if ( currFrame() >= frame_count)
 		{
@@ -119,7 +119,7 @@ namespace multi_proj_calib
 		this->m_img_pts.erase(m_img_pts.begin() + index);		
 	}
 
-	void CalibrationBase::setImageParams(unsigned int width, unsigned int height)
+	void CalibrationBase::setImageParams(uint width, uint height)
 	{
 		m_img_size.width = width;
 		m_img_size.height = height;
@@ -133,7 +133,7 @@ namespace multi_proj_calib
 		m_square_size = square_size;
 	}
 
-	void CalibrationBase::setFrameCount(unsigned int total_frame, unsigned int min_calib_frame)
+	void CalibrationBase::setFrameCount(uint total_frame, uint min_calib_frame)
 	{
 		m_mincalib_frame = min_calib_frame;
 		m_total_frame = total_frame;
@@ -171,7 +171,16 @@ namespace multi_proj_calib
 
 	void CalibrationBase::saveCalibParams(const string& file_name)
 	{
-		FileStorage fs(file_name, FileStorage::WRITE);
+		std::string fileToSave;
+
+		std::ifstream filetemp(file_name.c_str());
+		if (filetemp.good())
+		{
+			fileToSave = file_name.substr(0, file_name.find_last_of(".")) + "_1" + file_name.substr(file_name.find_last_of("."));
+			cout << "File " << file_name << " exists. Save to " << fileToSave << endl;
+		}
+
+		FileStorage fs(fileToSave, FileStorage::WRITE);
 
 		if (!m_rot_vecs.empty())
 			fs << "nrofframes" << (int)m_rot_vecs.size();
@@ -233,16 +242,34 @@ namespace multi_proj_calib
 		
 		fs["camera_matrix"] >> m_cam_mat;
 		fs["distortion_coefficients"] >> m_dist_coeff;
-		
+		fs["reprojection_error"] >> m_reproj_err;
+
 		cout << endl;
 		cout << "Load Calibration Result from: " << file_name << endl;
 		
-		cout << "camera_matrix:" << endl << m_cam_mat << endl << endl;
-		cout << "distortion_coefficients:" << endl << m_dist_coeff << endl << endl;
+		printIntrinsics();
+
 		m_ready = true;
 		fs.release();
 		return m_ready;
 	}
 
+	void CalibrationBase::printIntrinsics()
+	{
+		std::cout << "Intrinsic mat:" << std::endl <<
+			getCameraMatrix() << std::endl << std::endl;
+		std::cout << "distortion coefficients:" << getDistortCoeff() << std::endl << std::endl;
+		std::cout << "re-proj error:" << getReprojectionError() << std::endl;
+	}
+
+	void CalibrationBase::drawDetectedPattern(cv::Mat& img, const std::vector<cv::Point2f>& pattern_pts, cv::Size pattern_size)
+	{
+		if (!pattern_pts.empty() && !img.empty())
+		{
+			drawChessboardCorners(img, pattern_size, pattern_pts, true);
+			circle(img, pattern_pts[0], 10, cv::Scalar(0, 0, 0), -1, 6);
+			arrowedLine(img, pattern_pts[0], pattern_pts[1], cv::Scalar(0, 0, 0), 2);
+		}
+	}
 }
 

@@ -3,7 +3,7 @@
 
 namespace multi_proj_calib
 {
-	int Shader::init(const char * vertex_file_path, const char * fragment_file_path, int num_uniforms)
+	int Shader::init(const std::string& vertex_file_path, const std::string& fragment_file_path, int num_uniforms)
 	{
 		if (num_uniforms > 0)
 		{
@@ -25,7 +25,7 @@ namespace multi_proj_calib
 		return 0;
 	}
 
-	int Shader::loadShaders(const char * vertex_file_path, const char * fragment_file_path) {
+	int Shader::loadShaders(const std::string& vertex_file_path, const std::string& fragment_file_path) {
 
 		// Create the shaders
 		GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -33,7 +33,7 @@ namespace multi_proj_calib
 
 		// Read the Vertex Shader code from the file
 		std::string VertexShaderCode;
-		std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
+		std::ifstream VertexShaderStream(vertex_file_path.data(), std::ios::in);
 		if (VertexShaderStream.is_open()) {
 			std::string Line = "";
 			while (getline(VertexShaderStream, Line))
@@ -41,13 +41,13 @@ namespace multi_proj_calib
 			VertexShaderStream.close();
 		}
 		else {
-			printf("Fail to open vertex shader %s \n", vertex_file_path);
+			printf("Fail to open vertex shader %s \n", vertex_file_path.data());
 			getchar();
 			return -1;
 		}
 		// Read the Fragment Shader code from the file
 		std::string FragmentShaderCode;
-		std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
+		std::ifstream FragmentShaderStream(fragment_file_path.data(), std::ios::in);
 		if (FragmentShaderStream.is_open()) {
 			std::string Line = "";
 			while (getline(FragmentShaderStream, Line))
@@ -55,7 +55,7 @@ namespace multi_proj_calib
 			FragmentShaderStream.close();
 		}
 		else {
-			printf("Fail to open fragment shader %s \n", fragment_file_path);
+			printf("Fail to open fragment shader %s \n", fragment_file_path.data());
 			getchar();
 			return -1;
 		}
@@ -64,7 +64,7 @@ namespace multi_proj_calib
 		int InfoLogLength;
 
 		// Compile Vertex Shader
-		printf("\nCompiling shader : %s\n", vertex_file_path);
+		printf("\nCompiling shader : %s\n", vertex_file_path.data());
 		char const * VertexSourcePointer = VertexShaderCode.c_str();
 		glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
 		glCompileShader(VertexShaderID);
@@ -79,7 +79,7 @@ namespace multi_proj_calib
 		}
 
 		// Compile Fragment Shader
-		printf("Compiling shader : %s\n", fragment_file_path);
+		printf("Compiling shader : %s\n", fragment_file_path.data());
 		char const * FragmentSourcePointer = FragmentShaderCode.c_str();
 		glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
 		glCompileShader(FragmentShaderID);

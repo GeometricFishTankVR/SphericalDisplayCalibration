@@ -9,7 +9,7 @@ namespace multi_proj_calib
 
 	bool DisplayCalibration::setup()
 	{
-		unsigned int buf_width(0), buf_height(0);
+		uint buf_width(0), buf_height(0);
 
 		/* camera setup */
 		m_camera.getImgSize(buf_width, buf_height);
@@ -29,22 +29,20 @@ namespace multi_proj_calib
 		/* camera calib setup */
 		m_cam_calib.resetData();
 		m_cam_calib.setImageParams(buf_width, buf_height);
-		if (!m_cam_calib.loadCalibParams(file::camcalib_file)) {
+		if (!m_cam_calib.loadCalibParams(file::data_path + file::camcalib_file)) {
 			throw std::runtime_error("DisplayCalibration::setup(): Fail to load camera intrinsic file. ");
 		}
 
 		/* projector calib setup */
-		if (m_calibMethod == dp_calib::SemiAuto)
-		{ 
-			m_proj_calib.clear();
-			m_proj_calib.resize(m_num_proj);
-			for (int i = 0; i < m_num_proj; i++)
-			{
-				m_proj_calib[i].resetData();
-				m_proj_calib[i].setImageParams(setting::proj_width, setting::proj_height);
-				if (!m_proj_calib[i].loadCalibParams(file::projcalib_file[i])){
+		m_proj_calib.clear();
+		m_proj_calib.resize(m_num_proj);
+		for (uint i = 0; i < m_num_proj; i++)
+		{
+			m_proj_calib[i].resetData();
+			m_proj_calib[i].setImageParams(setting::proj_width, setting::proj_height);
+			if (m_calibMethod == dp_calib::SemiAuto) {
+				if (!m_proj_calib[i].loadCalibParams(file::data_path + file::projcalib_file[i]))
 					throw std::runtime_error("DisplayCalibration::setup(): Fail to load projector intrinsic file. ");
-				}
 			}
 		}
 
@@ -62,7 +60,7 @@ namespace multi_proj_calib
 		m_pixelarray.clear();
 		m_pixelarray.resize(m_num_proj+1);
 
-		for (int i = 1; i <= m_num_proj; i++)
+		for (unsigned int i = 1; i <= m_num_proj; i++)
 			m_pixelarray[i].m_alpha_mask = Mat::ones(Size(setting::proj_width, setting::proj_height), CV_32FC1);
 
 		m_cvwindow = "display calibration camera view";
@@ -94,15 +92,15 @@ namespace multi_proj_calib
 		bool keep_running = true;
 		bool found = false;
 
-		unsigned int buf_width(0), buf_height(0);
+		uint buf_width(0), buf_height(0);
 		m_camera.getImgSize(buf_width, buf_height);
 
 		Mat img_buf(buf_height, buf_width, setting::cv_pixel_format);
-		unsigned int buf_size = buf_width * buf_height;
+		uint buf_size = buf_width * buf_height;
 
 		std::vector<int> projector_order(m_num_proj);
 
-		for (int i = 0; i < m_num_proj; i++)
+		for (uint i = 0; i < m_num_proj; i++)
 		{
 			Projector proj_name = (Projector) (i + 1);
 			m_projectors.startProj(proj_name);
@@ -136,7 +134,7 @@ namespace multi_proj_calib
 							projector_order[i] = (int)proj_name;
 							m_mode = finish;
 						}
-						else if (ch - '0' > 0 && ch - '0' <= m_num_proj)
+						else if (ch - '0' > 0 && ch - '0' <= (int)m_num_proj)
 						{
 							projector_order[i] = ch - '0';
 							m_mode = finish;
@@ -177,11 +175,11 @@ namespace multi_proj_calib
 		m_projectors.cleanRender();
 		m_projectors.initPattern(render::ONE_CIRCLE);
 	
-		unsigned int buf_width(0), buf_height(0);
+		uint buf_width(0), buf_height(0);
 		m_camera.getImgSize(buf_width, buf_height);
 		
 		Mat img_buf(buf_height, buf_width, setting::cv_pixel_format);
-		unsigned int buf_size = buf_width * buf_height;
+		uint buf_size = buf_width * buf_height;
 
 		m_blobs.setupBlobDetector();
 		m_blobs.setTotalBlobCnt(setting::blob_count);
@@ -312,7 +310,7 @@ namespace multi_proj_calib
 			cout << "DisplayCalibration::estimatePairExtrinsic(): not in SemiAuto-Calibration mode. Can't estimate extrinsics." << endl;
 			return false;
 		}
-		const unsigned int proj_idx = m_curr_proj - 1;
+		const uint proj_idx = m_curr_proj - 1;
 
 		Mat cam_cam_mat = m_cam_calib.getCameraMatrix();
 		Mat cam_dist_coeff = m_cam_calib.getDistortCoeff();
@@ -320,7 +318,7 @@ namespace multi_proj_calib
 		Mat proj_cam_mat = m_proj_calib[proj_idx].getCameraMatrix();
 		Mat proj_dist_coeff = m_proj_calib[proj_idx].getDistortCoeff();
 
-		unsigned int num_pts = m_blobs.getCurrBlobCnt();
+		uint num_pts = m_blobs.getCurrBlobCnt();
 		
 		vector<Point2f> cam_pts = m_blobs.getCamBlobs();
 		vector<Point2f> proj_pts = m_blobs.getProjBlobs();
@@ -433,10 +431,10 @@ namespace multi_proj_calib
 			// compute per-blob reproj error: use to estimate sphere position
 			m_reproj_err[proj_idx].clear();
 
-			for (int i = 0; i < num_pts; i++)
+			for (uint i = 0; i < num_pts; i++)
 			{
-				double cam_d = norm(cam_pts[i] - cam_pts2[i]);
-				double proj_d = norm(proj_pts[i] - proj_pts2[i]);
+				float cam_d = norm(cam_pts[i] - cam_pts2[i]);
+				float proj_d = norm(proj_pts[i] - proj_pts2[i]);
 				m_reproj_err[proj_idx].push_back( (cam_d * cam_d + proj_d * proj_d)/2.f);
 			}
 
@@ -465,7 +463,7 @@ namespace multi_proj_calib
 
 	bool DisplayCalibration::updateParams()
 	{
-		FileStorage fs(file::optimparam_file, FileStorage::READ);
+		FileStorage fs(file::data_path+file::optimparam_file, FileStorage::READ);
 
 		if (!fs.isOpened())
 		{
@@ -475,7 +473,7 @@ namespace multi_proj_calib
 		cout << endl;
 		cout << "Update optimized parameters" << endl;
 
-		for (int i = 0; i < m_num_proj; i++)
+		for (unsigned int i = 0; i < m_num_proj; i++)
 		{
 			string param_name = "proj" + std::to_string(i) + "_param";
 			Mat_<float> proj_param;
@@ -518,7 +516,7 @@ namespace multi_proj_calib
 
 	void DisplayCalibration::computePixel3D()
 	{		
-		unsigned int i(0);
+		uint i(0);
 
 		while (i <= m_num_proj)
 		{
@@ -556,7 +554,7 @@ namespace multi_proj_calib
 		m_projectors.cleanRender();
 		m_projectors.initPattern(render::TEXTURE);
 
-		for (int i = 1; i <= m_num_proj; i++)
+		for (uint i = 1; i <= m_num_proj; i++)
 		{
 			// convert calibrated projector data to texture data
 			m_projectors.loadCalibResult(m_pixelarray[i].m_pixel_pts, m_pixelarray[i].m_alpha_mask, (Projector)i);
@@ -575,15 +573,14 @@ namespace multi_proj_calib
 		m_projectors.setCameraIntrinsic(KK, dist_coeff);
 		
 		// camera capture setup 
-		unsigned int buf_width(0), buf_height(0);
+		uint buf_width(0), buf_height(0);
 		m_camera.getImgSize(buf_width, buf_height);
 
 		Mat img_buf(buf_height, buf_width, setting::cv_pixel_format);
-		unsigned int buf_size = buf_width * buf_height;
+		uint buf_size = buf_width * buf_height;
 
 		// fsm flags
 		bool keep_running = true;
-		bool ready;
 		m_mode = start;
 		m_curr_proj = 0;
 
@@ -599,7 +596,7 @@ namespace multi_proj_calib
 			switch (m_mode)
 			{
 			case start:
-				for (int i = 1; i <= m_num_proj; i++)
+				for (uint i = 1; i <= m_num_proj; i++)
 					m_projectors.projPattern((Projector)i);
 				break;
 			case finish:
@@ -611,7 +608,7 @@ namespace multi_proj_calib
 			m_camera.showControlDlg();
 			m_projectors.projFlush();
 		}
-		for (int i = 1; i <= m_num_proj; i++)
+		for (uint i = 1; i <= m_num_proj; i++)
 			m_projectors.stopProj((Projector)i);
 
 		cv::setMouseCallback(m_cvwindow, NULL, NULL);
@@ -623,7 +620,7 @@ namespace multi_proj_calib
 	
 		FileStorage fs(file_name, FileStorage::WRITE);
 
-		for (int proj_idx = 0; proj_idx < m_num_proj; proj_idx++)
+		for (unsigned int proj_idx = 0; proj_idx < m_num_proj; proj_idx++)
 		{
 			Mat_<float> Rmat = m_proj_calib[proj_idx].getExtrinsicRmat().clone();
 			Mat_<float> Tvec = m_proj_calib[proj_idx].getExtrinsicTvec().clone();
@@ -651,7 +648,7 @@ namespace multi_proj_calib
 		cout << "proj1 sphere fit residue: " << residue << endl;
 		if (m_num_proj > 1)
 		{
-			unsigned int proj_idx(0);
+			uint proj_idx(0);
 
 			vector<Point3f> all_blobs;
 			vector<float> all_err;
@@ -709,7 +706,7 @@ namespace multi_proj_calib
 			pArrayIter.push_back(it);
 		}
 		/// compute alpha mask using all projector calibration and iteractors
-		for (int p_idx = 1; p_idx <= m_num_proj; p_idx++)
+		for (unsigned int p_idx = 1; p_idx <= m_num_proj; p_idx++)
 		{
 			m_pixelarray[p_idx].computeAlphaMask(m_proj_calib, pArrayIter);
 		}
@@ -719,7 +716,7 @@ namespace multi_proj_calib
 	{
 		string file_dir = dir.empty() ? file::data_path : dir;
 
-		for (int idx = 0; idx <= m_num_proj; idx++)
+		for (uint idx = 0; idx <= m_num_proj; idx++)
 		{
 			vector<Point3f> pixel_nml;
 
@@ -741,7 +738,7 @@ namespace multi_proj_calib
 	{
 		string file_dir = dir.empty() ? file::data_path : dir;
 		
-		for (int idx = 0; idx <= m_num_proj; idx++)
+		for (uint idx = 0; idx <= m_num_proj; idx++)
 		{
 			if (idx == 0) /// camera
 			{
@@ -758,7 +755,7 @@ namespace multi_proj_calib
 	double DisplayCalibration::linearWLSSpherePose(const vector<Point3f>& blobs, const vector<float>& weight, Mat_<double>& sphere_pose )
 	{
 		CV_Assert(blobs.size() == weight.size());
-		const unsigned int num_pts = blobs.size();
+		const uint num_pts = (int) blobs.size();
 
 		Mat_<float> W = Mat::diag(Mat(weight)); // weight matrix
 
@@ -768,7 +765,7 @@ namespace multi_proj_calib
 
 
 		Mat B(num_pts, 1, CV_32FC1);
-		for (int i = 0; i < num_pts; i++)
+		for (uint i = 0; i < num_pts; i++)
 		{
 			B.at<float>(i) = -XYZ.at<float>(i, 0) * XYZ.at<float>(i, 0) - XYZ.at<float>(i, 1) * XYZ.at<float>(i, 1) - XYZ.at<float>(i, 2) * XYZ.at<float>(i, 2);
 		}
@@ -788,7 +785,7 @@ namespace multi_proj_calib
 		// compute residue
 		Point3f sphere_center = Point3f(sphere_pose(0), sphere_pose(1), sphere_pose(2));
 		double residue(0);
-		for (int i = 0; i < num_pts; i++)
+		for (uint i = 0; i < num_pts; i++)
 		{
 			double dis = norm(blobs[i] - sphere_center) - sphere_pose(3);
 			residue += dis * dis;
@@ -822,7 +819,7 @@ namespace multi_proj_calib
 	bool DisplayCalibration::triangulatePairFeature(const vector<Point2f>& cam_blobs_nml, const Mat& cam_proj_mat, const vector<Point2f>& proj_blobs_nml, const Mat& proj_proj_mat, vector<Point3f>& obj_pts)
 	{
 		CV_Assert(cam_blobs_nml.size() == proj_blobs_nml.size());
-		const int num_pts = cam_blobs_nml.size();
+		const int num_pts = (int) cam_blobs_nml.size();
 		Matx34d extrin_mat = proj_proj_mat;
 
 		obj_pts.clear();

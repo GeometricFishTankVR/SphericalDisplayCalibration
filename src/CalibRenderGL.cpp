@@ -87,11 +87,11 @@ namespace multi_proj_calib
 				}
 			}
 
-			for (unsigned int i = 0; i < m_num_window; i++)
+			for (uint i = 0; i < m_num_window; i++)
 			{
 				if (i != pri_index)
 				{
-					if (m_num_window > (unsigned int) mon_count) // more windows requested than monitors actually connected: create all windows in primary
+					if (m_num_window > (uint) mon_count) // more windows requested than monitors actually connected: create all windows in primary
 						m_pwindow.push_back(glfwCreateWindow(m_width, m_height, "projector window", NULL, *m_pwindow.cbegin()));
 					else
 					{
@@ -161,7 +161,7 @@ namespace multi_proj_calib
 				glPointSize(size);
 				m_num_vertices = createCircleGridVertices(vertex_buffer);
 				// circle shader 
-				int err = m_calib_shader.init("passthroughshader.vs", "circleshader.fs", 1);
+				int err = m_calib_shader.init(file::src_path + "passthroughshader.vs", file::src_path + "circleshader.fs", 2);
 				m_calib_shader.loadUniformLocation("point_vertice", 0);
 				if (err != 0) cout << " CalibRenderGL::loadPattern(): Fail to initialize circle shader" << endl;
 				m_cir_center = glm::vec2(1.f, 1.f);
@@ -180,7 +180,7 @@ namespace multi_proj_calib
 				glPointSize(size);
 				m_num_vertices = createOneCircleVertices(vertex_buffer);
 				// one circle shader 
-				int err = m_calib_shader.init("onecircleshader.vs", "circleshader.fs", 2);
+				int err = m_calib_shader.init(file::src_path + "onecircleshader.vs", file::src_path + "circleshader.fs", 2);
 				if (err != 0) cout << " CalibRenderGL::loadPattern(): Fail to initialize one circle shader" << endl;
 				m_calib_shader.loadUniformLocation("point_vertice", 0);
 				m_calib_shader.loadUniformLocation("pRes", 1);
@@ -191,7 +191,7 @@ namespace multi_proj_calib
 			{
 				m_num_vertices = createQuadVertices(vertex_buffer);
 				// shader
-				int err = m_calib_shader.init("passthroughshader.vs", "projshader.fs", 8);
+				int err = m_calib_shader.init(file::src_path + "passthroughshader.vs", file::src_path + "projshader.fs", 8);
 				if (err != 0) cout << " CalibRenderGL::loadPattern(): Fail to initialize projshader" << endl;
 				m_calib_shader.loadUniformLocation("pattern_sampler", 0);
 				m_calib_shader.loadUniformLocation("proj_sampler", 1);
@@ -222,7 +222,7 @@ namespace multi_proj_calib
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 
-			unsigned int curr_window = 1;
+			uint curr_window = 1;
 			while (curr_window < m_num_window)
 			{
 				glfwMakeContextCurrent(m_pwindow.at(curr_window));
@@ -251,7 +251,7 @@ namespace multi_proj_calib
 
 		}
 
-		void CalibRenderGL::loadCalibTexture(float* pixel_coord, int win_index)
+		void CalibRenderGL::loadCalibTexture(float* pixel_coord, uint win_index)
 		{
 			if (win_index < m_num_window)
 			{
@@ -275,7 +275,7 @@ namespace multi_proj_calib
 			}
 		}
 
-		void CalibRenderGL::drawPattern(unsigned int win_index)
+		void CalibRenderGL::drawPattern(uint win_index)
 		{
 			if (win_index < m_num_window)
 			{
@@ -286,7 +286,7 @@ namespace multi_proj_calib
 					m_calib_shader.useShader();
 					glBindVertexArray(m_pattern_vao.at(win_index));
 					glUniform2f(m_calib_shader.getUniformID(0), m_cir_center.x, m_cir_center.y);
-					glUniform2f(m_calib_shader.getUniformID(1), m_width, m_height);
+					glUniform2f(m_calib_shader.getUniformID(1), (float)m_width, (float)m_height);
 					glDrawArrays(GL_POINTS, 0, m_num_vertices);
 				}
 				else if (m_pattern == LINE_GRID)
@@ -312,7 +312,7 @@ namespace multi_proj_calib
 					glUniform3fv(m_calib_shader.getUniformID(4), 1, &m_kc[0]);
 					glUniform2fv(m_calib_shader.getUniformID(5), 1, &m_pc[0]);
 					glUniform2fv(m_calib_shader.getUniformID(6), 1, &m_cam_res[0]); // camera resolution
-					glUniform2f(m_calib_shader.getUniformID(7), m_width, m_height); // projector resolution
+					glUniform2f(m_calib_shader.getUniformID(7), (float)m_width, (float)m_height); // projector resolution
 
 					glDrawArrays(GL_TRIANGLES, 0, m_num_vertices);
 				}
@@ -413,14 +413,14 @@ namespace multi_proj_calib
 			}
 			/* get the surface desc */
 			fread(&header, 124, 1, fp);
-			unsigned int height = *(unsigned int*)&(header[8]);
-			unsigned int width = *(unsigned int*)&(header[12]);
-			unsigned int linearSize = *(unsigned int*)&(header[16]);
-			unsigned int mipMapCount = *(unsigned int*)&(header[24]);
-			unsigned int fourCC = *(unsigned int*)&(header[80]);
+			uint height = *(uint*)&(header[8]);
+			uint width = *(uint*)&(header[12]);
+			uint linearSize = *(uint*)&(header[16]);
+			uint mipMapCount = *(uint*)&(header[24]);
+			uint fourCC = *(uint*)&(header[80]);
 
 			unsigned char * buffer;
-			unsigned int bufsize;
+			uint bufsize;
 
 			bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize;
 			buffer = (unsigned char*)malloc(bufsize * sizeof(unsigned char));
@@ -428,8 +428,8 @@ namespace multi_proj_calib
 
 			fclose(fp);
 
-			unsigned int components = (fourCC == FOURCC_DXT1) ? 3 : 4;
-			unsigned int format;
+			uint components = (fourCC == FOURCC_DXT1) ? 3 : 4;
+			uint format;
 			switch (fourCC)
 			{
 			case FOURCC_DXT1:
@@ -454,13 +454,13 @@ namespace multi_proj_calib
 			glBindTexture(GL_TEXTURE_2D, textureID);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-			unsigned int blockSize = (format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
-			unsigned int offset = 0;
+			uint blockSize = (format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT) ? 8 : 16;
+			uint offset = 0;
 
 			/* load the mipmaps */
-			for (unsigned int level = 0; level < mipMapCount && (width || height); ++level)
+			for (uint level = 0; level < mipMapCount && (width || height); ++level)
 			{
-				unsigned int size = ((width + 3) / 4)*((height + 3) / 4)*blockSize;
+				uint size = ((width + 3) / 4)*((height + 3) / 4)*blockSize;
 				glCompressedTexImage2D(GL_TEXTURE_2D, level, format, width, height,
 					0, size, buffer + offset);
 

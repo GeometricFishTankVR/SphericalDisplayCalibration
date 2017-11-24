@@ -11,24 +11,17 @@
 #include <opencv2/opencv.hpp>
 #include <string>
 
-///* global macros to choose main function *
-///
-//#define CAM_CALIB
-//#define PROJ_CALIB
-#define DISP_CALIB
-
-#define DBG_MATLAB_
-
-
 namespace multi_proj_calib
 {
+	typedef unsigned int uint;
+	
 	namespace setting
 	{
 		extern const int proj_width;
 		extern const int proj_height;
 		extern const int cam_width;
 		extern const int cam_height;
-		extern const unsigned int cv_pixel_format;
+		extern const uint cv_pixel_format;
 		extern const float blob_radius;
 		extern const int blob_count;
 	}
@@ -45,6 +38,7 @@ namespace multi_proj_calib
 		extern const std::string camgeom_file;
 		extern const std::string blen_file[4];
 		extern const std::string data_path;
+		extern const std::string src_path;
 	}
 
 	namespace utils

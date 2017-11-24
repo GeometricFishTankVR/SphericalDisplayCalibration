@@ -33,7 +33,7 @@ namespace multi_proj_calib
 	namespace dp_calib
 	{
 		enum FsmStatus { project = 0, detect = 1, start = 2, calibrate = 3, idle = 4, finish = 5};
-		enum CalibMethod { AutoCalib = 0, SemiAuto = 1 };
+		enum CalibMethod { Auto = 0, SemiAuto = 1 };
 		void pairCalibOnMouse(int event, int x, int y, int flags, void* userdata);
 		void displayOnMouse(int event, int x, int y, int flags, void* userdata);
 	}
@@ -103,9 +103,9 @@ namespace multi_proj_calib
 		void setCalibrationMethod(dp_calib::CalibMethod m){
 			m_calibMethod = m; }
 
-		unsigned int& getCurrProjector() { return m_curr_proj; }
+		uint& getCurrProjector() { return m_curr_proj; }
 
-		const unsigned int& getTotalProjector() { return m_num_proj; }
+		const uint& getTotalProjector() { return m_num_proj; }
 
 		dp_calib::CalibMethod getCalibMethod() { return m_calibMethod; }
 
@@ -125,8 +125,8 @@ namespace multi_proj_calib
 
 		///***** Member Data ******///
 		
-		unsigned int m_num_proj;
-		unsigned int m_curr_proj;
+		uint m_num_proj;
+		uint m_curr_proj;
 		double m_MaxReprojErr; // maximum reprojection error allowed
 		
 		std::string m_cvwindow;

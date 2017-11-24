@@ -45,7 +45,7 @@ namespace multi_proj_calib
 
 		void setPatternPixel(float dwidth_pixel, float dheight_pixel);
 
-		void setStaticFrame(unsigned int static_frame);
+		void setStaticFrame(uint static_frame);
 
 		void setExtrinsic(const cv::Mat& rmat, const cv::Mat& tvec)
 		{
@@ -69,8 +69,7 @@ namespace multi_proj_calib
 
 		cv::Mat& getExtrinsicTvec() { return m_t3x1_proj2cam; }
 
-		unsigned int getStaticFrame() { return m_static_frame; }
-		void  saveProjCalibParams(const std::string& file_name );
+		uint getStaticFrame() { return m_static_frame; }
 
 	private:
 		cv::Mat m_r3x3_proj2cam;
@@ -82,7 +81,7 @@ namespace multi_proj_calib
 
 		cv::Size2f m_dpattern_pixel;
 		std::vector<cv::Point2f> m_pattern_pts;
-		unsigned int m_static_frame;
+		uint m_static_frame;
 
 		std::vector<cv::Point2f> m_dynamic_quad;
 	};

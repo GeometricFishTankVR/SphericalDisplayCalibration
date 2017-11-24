@@ -23,15 +23,18 @@ namespace stereo_recon
 	class FundamentalMat
 	{
 	public:
-		FundamentalMat(): m_thre_ratio(.99f){}
+		FundamentalMat(): m_thre_ratio(.99f), m_num_trials(500){}
 		
 		cv::Mat_<float> findFundamentalMat(const std::vector<cv::Point2f>& pts1, const std::vector<cv::Point2f>& pts2, DistanceType type);
 
 		cv::Mat_<float> findEssentialMat(const std::vector<cv::Point2f>& pts1, const std::vector<cv::Point2f>& pts2, DistanceType type);
 		
-		void setThresholdRatio(const float& thre)
-		{
+		void setThresholdRatio(const float& thre){
 			m_thre_ratio = thre;
+		}
+
+		void setNumOfTrials(unsigned int numTrials){
+			m_num_trials = numTrials;
 		}
 
 	protected:
@@ -40,7 +43,7 @@ namespace stereo_recon
 		
 		size_t m_size;
 		
-		const unsigned int m_num_trials = 500;
+		unsigned int m_num_trials;
 		
 		cv::Mat_<float> m_F;
 		

@@ -31,7 +31,7 @@ namespace multi_proj_calib
 
 	void BoundingCircle::drawBoundaryCircle(Mat& img)
 	{
-		circle(img, m_bound_center, m_bound_radius, Scalar(255, 255, 255), 5);
+		circle(img, (cv::Point2i)m_bound_center, m_bound_radius, Scalar(255, 255, 255), 5);
 	}
 
 	void BoundingCircle::linearLSCircle()
@@ -71,7 +71,7 @@ namespace multi_proj_calib
 		float meanY = cv::mean(m_bound_pt)[1];
 
 		// computing moments 
-		for (unsigned int i = 0; i< size; i++)
+		for (uint i = 0; i< size; i++)
 		{
 			Xi = m_bound_pt[i].x - meanX;   //  centered x-coordinates
 			Yi = m_bound_pt[i].y - meanY;   //  centered y-coordinates

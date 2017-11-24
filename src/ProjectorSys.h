@@ -46,21 +46,21 @@ namespace multi_proj_calib {
 		//! start to project: call before loop
 		void startProj(Projector proj) 
 		{
-			if ((unsigned int) proj <= m_num_proj)
+			if ((uint) proj <= m_num_proj)
 				m_render.showWindow(proj, true);
 		}
 
 		//! stop to project: call after loop
 		void stopProj(Projector proj) 
 		{
-			if ((unsigned int)proj <= m_num_proj)
+			if ((uint)proj <= m_num_proj)
 				m_render.showWindow(proj, false);
 		}
 		
 		//! project pattern: call in loop
 		void projPattern(Projector proj) 
 		{
-			if ((unsigned int)proj <= m_num_proj)
+			if ((uint)proj <= m_num_proj)
 			{
 					m_render.drawPattern(proj);
 			}
@@ -84,7 +84,7 @@ namespace multi_proj_calib {
 			// convert openCV data type to generic array
 			size_t size = pixel_pt.size();
 			std::vector<float> texture_rgba(size * 4);	// OpenGL Texture in the format of RGBA
-			for (unsigned int i = 0; i < size; i++)
+			for (uint i = 0; i < size; i++)
 			{
 				texture_rgba[4 * i] = pixel_pt[i].x;
 				texture_rgba[4 * i + 1] = pixel_pt[i].y;
@@ -96,7 +96,7 @@ namespace multi_proj_calib {
 			}
 
 			float* p_float = texture_rgba.data();
-			m_render.loadCalibTexture(p_float, (unsigned int)proj);
+			m_render.loadCalibTexture(p_float, (uint)proj);
 		}
 
 		//! clean up renderer stuff (vao, vbo, shader, texture): call in the end
@@ -141,9 +141,9 @@ namespace multi_proj_calib {
 	private:
 		render::CalibRenderGL m_render;
 
-		unsigned int m_width;
-		unsigned int m_height;
-		unsigned int m_num_proj;
+		uint m_width;
+		uint m_height;
+		uint m_num_proj;
 
 	};
 }

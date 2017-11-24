@@ -60,7 +60,7 @@ namespace multi_proj_calib
 		
 		cv::Mat m_mask; // mask of pixels on the display for this device
 		std::vector<cv::Point2i> m_contours2d; // contour of pixels on the display for this device
-		unsigned int m_deviceID; // device index (0: cam, 1 : proj1, 2 : proj2, ...)
+		uint m_deviceID; // device index (0: cam, 1 : proj1, 2 : proj2, ...)
 		
 		///***** Member Methods and Data *****////
 	
@@ -82,7 +82,7 @@ namespace multi_proj_calib
 		void computeAlphaFromDistance(const std::vector<cv::Mat>& distance_mat, const int& proj_idx, cv::Mat& out_alpha_mask);
 
 		// save float data with size to bin file 
-		void saveFloatArrayToBinFile(std::string file, float* pData, unsigned int size);
+		void saveFloatArrayToBinFile(std::string file, float* pData, uint size);
 	};
 
 }

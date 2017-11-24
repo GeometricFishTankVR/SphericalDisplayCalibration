@@ -15,6 +15,8 @@
 #include <iomanip>
 #include <string>
 
+#include "global.h"
+
 #include "FlyCapture2.h"
 #include "FlyCapture2GUI.h"
 

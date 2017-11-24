@@ -180,7 +180,7 @@ namespace multi_proj_calib
 	void Pixel3DArray::computeAlphaMask( std::vector<ProjectorCalibration>& projCalibArray, std::vector<std::vector<Pixel3DArray>::iterator>& pixelArrayIter)
 	{
 
-		unsigned int nProj = projCalibArray.size();
+		uint nProj = projCalibArray.size();
 		if (nProj == 0)
 			throw std::runtime_error("Pixel3DArray::computeAlphaMask() fails: projector calibration array is null. ");
 		if (pixelArrayIter.size() != nProj)
@@ -192,7 +192,7 @@ namespace multi_proj_calib
 		if (m_mask.empty() || m_contours2d.empty())
 			throw std::runtime_error("Pixel3DArray::computeAlphaMask() fails: need and m_contours2d m_mask to compute alpha mask. ");
 		
-		unsigned int pi = m_deviceID - 1; // current projector
+		uint pi = m_deviceID - 1; // current projector
 
 		cout << endl;
 		cout << "===== computing alpha mask of projector " << to_string(m_deviceID) << "... =====" << endl;
@@ -204,7 +204,7 @@ namespace multi_proj_calib
 		m_alpha_mask = Mat::ones(Size(setting::proj_width, setting::proj_height), CV_32FC1);
 
 		/* find inliners and compute shortest distance to each contour */
-		for (unsigned int pj = 0; pj < nProj; pj++) // for all other projectors
+		for (uint pj = 0; pj < nProj; pj++) // for all other projectors
 		{
 			cout << "computing projector " << pi << " to projector " << pj << endl;
 			if (pi != pj) // compute alpha mask of projector i
@@ -232,7 +232,7 @@ namespace multi_proj_calib
 				vector<Point2f> img_pti;
 				projectPoints(m_pixel_pts, Rvecj, Tvecj, KKj, dist_coeffj, img_pti); // project pixels from projector i to projector j (i!=j)
 
-				for (unsigned int k = 0; k < img_pti.size(); k++)
+				for (uint k = 0; k < img_pti.size(); k++)
 				{
 					Point2f proj_pt = img_pti[k];
 					// is inliner
@@ -242,10 +242,10 @@ namespace multi_proj_calib
 						if (ptr_mask_pj[cvFloor(proj_pt.y) * (*pixelArrayIter[pj]).m_mask.step1() + cvFloor(proj_pt.x)]) 
 						{
 							// 2d coordinates in pi
-							unsigned int idx_i = k / setting::proj_width;
-							unsigned int idx_j = k % setting::proj_width;
+							uint idx_i = k / setting::proj_width;
+							uint idx_j = k % setting::proj_width;
 
-							unsigned int idx_dmat_k = idx_i*distance_mat[pj].step1() + idx_j;
+							uint idx_dmat_k = idx_i*distance_mat[pj].step1() + idx_j;
 
 							double dj = computeShortestDistancetoContour((*pixelArrayIter[pj]).m_contours2d, proj_pt);
 							ptr_dmat_pj[idx_dmat_k] = std::pow(dj, 3);
@@ -332,7 +332,7 @@ namespace multi_proj_calib
 			throw std::runtime_error("Pixel3DArray::createPixelMask() fails: m_pixel_pts does not have the correct size. ");
 		
 		m_mask = Mat::zeros(Size(setting::proj_width, setting::proj_height), CV_8UC1);
-		for (unsigned int i = 0; i < m_pixel_pts.size(); i++)
+		for (uint i = 0; i < m_pixel_pts.size(); i++)
 		{
 			int mask_j = i % setting::proj_width;
 			int mask_i = i / setting::proj_width;
@@ -364,7 +364,7 @@ namespace multi_proj_calib
 	{
 		size_t size_contr = contour3d.size();
 		vector<double> arc_distance(size_contr);
-		for (unsigned int i = 0; i < size_contr; i++)
+		for (uint i = 0; i < size_contr; i++)
 		{
 			arc_distance[i] = cv::norm(contour3d[i] - obj_pt);
 		}
@@ -381,7 +381,7 @@ namespace multi_proj_calib
 	void Pixel3DArray::savePixel3DArray(const std::string& file, const std::string& dataType, std::vector<cv::Point3f> dataToSave)
 	{
 		float* p_float;
-		unsigned int size;
+		uint size;
 	
 		if (dataType.compare("geom") == 0)
 		{
@@ -469,7 +469,7 @@ namespace multi_proj_calib
 		fclose(pfile);
 	}
 
-	void Pixel3DArray::saveFloatArrayToBinFile(std::string file, float* pData, unsigned int size)
+	void Pixel3DArray::saveFloatArrayToBinFile(std::string file, float* pData, uint size)
 	{
 		FILE* pfile = fopen(file.data(), "wb");
 		if (pfile == NULL)

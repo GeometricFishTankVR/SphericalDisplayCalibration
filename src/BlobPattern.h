@@ -9,7 +9,6 @@
 #define CALIB_BLOB_PATTERN_H
 
 #include <iostream>
-
 #include <vector>
 #include <string> 
 #include <stdexcept>
@@ -91,9 +90,9 @@ namespace multi_proj_calib
 
 		bool isBoundCircleFound() { return m_bound_circle.isBoundCircleFound(); }
 
-		const int getCurrBlobCnt() const { return m_cam_blobs.size(); }
+		const uint getCurrBlobCnt() const { return m_cam_blobs.size(); }
 
-		const int& getTotalBlobCnt() const { return m_blob_total_count; }
+		const uint& getTotalBlobCnt() const { return m_blob_total_count; }
 
 		const cv::Size& getCurrBlobIdx() const { return m_curr_cir; }
 
@@ -116,7 +115,7 @@ namespace multi_proj_calib
 		std::vector<cv::Point2f> m_proj_blobs;
 		
 		cv::RNG m_rng;
-		int m_blob_total_count;
+		uint m_blob_total_count;
 		cv::Size m_curr_cir; //index of current projected blob, at (i,j) within M x N blob grid
 		cv::Size m_grid_size; //grid size of blob patterns, contains M x N blobs
 

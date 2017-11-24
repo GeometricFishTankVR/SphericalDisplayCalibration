@@ -185,18 +185,9 @@ namespace multi_proj_calib
 		m_dpattern_pixel.height = dheight_pixel;
 	}
 
-	void ProjectorCalibration::setStaticFrame(unsigned int static_frame)
+	void ProjectorCalibration::setStaticFrame(uint static_frame)
 	{
 		m_static_frame = static_frame;
-	}
-
-	void ProjectorCalibration::saveProjCalibParams(const std::string& file_name)
-	{
-		FileStorage fs(file_name, FileStorage::WRITE);
-		fs << "rotation3x3_proj2cam" << m_r3x3_proj2cam;
-		fs << "translation3x1_proj2cam" << m_t3x1_proj2cam;
-		fs.release();
-		saveCalibParams(file_name);
 	}
 
 }

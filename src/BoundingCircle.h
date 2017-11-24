@@ -62,7 +62,7 @@ namespace multi_proj_calib
 
 		// vars for manual way to compute boundary
 		std::vector<cv::Point2f> m_bound_pt;
-		static const unsigned int m_total_pt = 4;
+		static const uint m_total_pt = 4;
 		void linearLSCircle();
 
 	};

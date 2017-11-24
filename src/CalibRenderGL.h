@@ -34,7 +34,7 @@ namespace multi_proj_calib
 			static const int m_pattern_rows = 10;
 			static const int m_pattern_cols = 8;
 
-			CalibRenderGL(unsigned int width = setting::proj_width, unsigned int height = setting::proj_height, unsigned int win_count = 1, unsigned int frm_rate = 60)
+			CalibRenderGL(uint width = setting::proj_width, uint height = setting::proj_height, uint win_count = 1, uint frm_rate = 60)
 				: m_width(width), m_height(height), m_num_window(win_count + 1) // always plus one for primary dbg monitor
 			{
 				int err;
@@ -50,14 +50,14 @@ namespace multi_proj_calib
 			~CalibRenderGL()
 			{
 				cleanup();
-				for (unsigned int i = 0; i < m_num_window; i++)
+				for (uint i = 0; i < m_num_window; i++)
 				{
 					glfwDestroyWindow(m_pwindow.at(i));
 				}
 				glfwTerminate();
 			}
 			
-			void clearDisplay(unsigned int win_index)
+			void clearDisplay(uint win_index)
 			{
 				glfwMakeContextCurrent(m_pwindow.at(win_index));
 				glClear(GL_COLOR_BUFFER_BIT);
@@ -69,7 +69,7 @@ namespace multi_proj_calib
 				m_calib_shader.~Shader();
 				//vbo
 				glDeleteBuffers(1, &m_pattern_vbo);
-				for (unsigned int i = 0; i < m_num_window; i++)
+				for (uint i = 0; i < m_num_window; i++)
 				{
 					//vao
 					glDeleteVertexArrays(1, &m_pattern_vao.at(i));
@@ -82,7 +82,7 @@ namespace multi_proj_calib
 			
 			void flushBuffer()
 			{
-				unsigned int curr_window = 0;
+				uint curr_window = 0;
 				glfwPollEvents();
 				while (curr_window < m_num_window)
 				{
@@ -91,14 +91,14 @@ namespace multi_proj_calib
 				}
 			}
 
-			void flushBuffer(unsigned int win_index)
+			void flushBuffer(uint win_index)
 			{
 				glfwSwapInterval(1);
 				glfwPollEvents();
 				glfwSwapBuffers(m_pwindow.at(win_index));
 			}
 
-			void showWindow(unsigned int win_index, bool show)
+			void showWindow(uint win_index, bool show)
 			{
 				if (win_index < m_num_window)
 				{
@@ -111,11 +111,11 @@ namespace multi_proj_calib
 					std::cout << "illegal window index" << std::endl;
 			}
 
-			void drawPattern(unsigned int win_index);
+			void drawPattern(uint win_index);
 			
 			void loadPattern(RenderPattern pattern, float pattern_size = 50.0);
 			
-			void loadCalibTexture(float* pixel_coord, int win_index);
+			void loadCalibTexture(float* pixel_coord, uint win_index);
 
 			void getdPatternPixel(float& d_width, float& d_height)
 			{
@@ -165,10 +165,10 @@ namespace multi_proj_calib
 			glm::vec2 m_pc;
 			glm::vec2 m_cam_res; // camera resolution
 
-			unsigned int m_num_vertices;
-			unsigned int m_width;
-			unsigned int m_height;
-			unsigned int m_num_window;
+			uint m_num_vertices;
+			uint m_width;
+			uint m_height;
+			uint m_num_window;
 
 			std::vector<GLFWwindow*> m_pwindow;
 			RenderPattern m_pattern;
