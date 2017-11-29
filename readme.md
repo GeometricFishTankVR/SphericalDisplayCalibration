@@ -2,13 +2,21 @@
 
 Source code for the paper:
 
-Q. Zhou, G. Miller, K. Wu and S. Fels. [Automatic calibration of a multiple-projector spherical fish tank VR display](http://ieeexplore.ieee.org/abstract/document/7926707/). WACV 2017.
+Q. Zhou, G. Miller, K. Wu and S. Fels. [Automatic calibration of a multiple-projector spherical fish tank VR display](http://ieeexplore.ieee.org/abstract/document/7926707/). WACV 2017.   ([VIDEO](https://youtu.be/Dgs4FmHCvp8))
 
-- Automatic Calibration Approach
-  - ​
-- Semi-automatic Calibration Approach
-  - ​
-- Video: https://youtu.be/Dgs4FmHCvp8
+- Multiple-Projector Spherical Screen Calibration: this approach calibrates a multi-projector spherical screen. It recovers the geometry information (3d coordinates) of each pixel on the screen and computes the blending information (alpha mask) which adjusts the intensity of overlapping area for adjacent projectors. The result can be used to render wall-papered content on the surface and 3D content in the sphere ([video](https://youtu.be/KVKyXYCttfA)). 
+
+- There are two related approaches using this library to calibrate the spherical screen: an automatic calibration approach and a semi-automatic approach. Both the automatic and semiautomatic approach require a calibrated camera with know intrinsic matrix and lens distortions. The semiautomatic approach requires
+
+  - Automatic Calibration Approach
+    - ​
+
+  - Semi-automatic Calibration Approach
+    - ​
+
+  ​
+
+- ​
 
 # Demo
 
@@ -26,20 +34,23 @@ Q. Zhou, G. Miller, K. Wu and S. Fels. [Automatic calibration of a multiple-proj
   - Notes:
     - Only one projector + primary monitor are connected when running. 
     - The board should be rigid and as close to a plane as possible. 
-
     - When spatial variance of the board is small, reprojection error would be high.
+    - Turn off any auto-functionalities on the projector: auto-keystone correction etc.
 - Spherical display calibration example
   - File: SphericalDisplayCalibApplication.cpp, main_automatic_calib.m or main_semiauto_calib.m
   - How-to-use: 
-    - Run SphericalDisplayCalibApplication.cpp, follow the instruction on the console window: 1. determine the projector order (projector #1, #2, etc); 2. define the projection circle (by clicking on the circle) on the spherical screen so that all pattern features are within the circle from the camera view; 3. blob projection and detection will be triggered for each projector; reprojection error will show up for each projector if it is in the Semi-automatic mode (normally below 2). 4. Once all projectors have projected, feature data will be saved. If it is in the Semi-automatic mode, the initial guess of projector extrinsics and sphere pose will also be save. 
-    - Run main_automatic_calib.m if using automatic calibration mode, or main_semiauto_calib.m if using automatic calibration mode. 
+    - Run SphericalDisplayCalibApplication.cpp, follow the instruction on the console window: 
+      - Determine the projector order (projector #1, #2, etc); 
+      - Define the projection circle (by clicking on the circle) on the spherical screen so that all pattern features are within the circle from the camera view; 
+      - Blob projection and detection will be triggered for each projector; reprojection error will show up for each projector if it is in the Semi-automatic mode (normally below 2). 
+      - Once all projectors have projected, feature data will be saved. If it is in the Semi-automatic mode, the initial guess of projector extrinsics and sphere pose will also be saved. 
+    - Run main_automatic_calib.m in Matlab if using automatic calibration mode, or main_semiauto_calib.m if using semiautomatic calibration mode. In the automatic calibration mode, an initial guess of extrinsics and sphere pose will be first generated and non-linear optimization will be applied. In the semiautomatic calibration mode, the initial guess will be read from file and non-linear optimization will be applied on that.
   - Video:
   - Notes:
     - When the baseline between camera and projector is too short, the fundamental matrix might be inaccurate.
-    - When observed projection area on Surface is too small (close to a plane), the  fundamental matrix might be inaccurate. 
-    - Turn off any auto-functionalities on the projector: auto-keystone correction etc.
-    - Blob detection is lighting-sensitive. May require to tweak detector params of these two. Currently the accuracy of detection depends on the light condition, improvements are on the way for different light conditions by automatically adjusting exposure/shutter speed based on captured images.
-    - Be careful with out-of-focus area: if overlapping area is out-of-focus by projector, the ghosting effect is likely to happen. 
+    - When observed projection area on Surface is too small (close to a plane), the fundamental matrix might be inaccurate. 
+    - Blob detection is lighting-sensitive. May require to adjust the camera parameters and detector parameters based on the lighting. 
+    - If the overlapping area across projectors is out-of-focus for projectors, the ghosting effect is likely to happen. 
 
 # Dependency
 

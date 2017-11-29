@@ -1,13 +1,13 @@
 ===== Library Dependences =====
 
-- CalibrationBase.h: Base class that supports functionalities to calibrate a single device using pinhole-camera-model. (use OpenCV 2.4.13 )
-	- CameraCalibration: derived from CalibrationBase. 
+- CalibrationBase.h: Base class that supports functionalities to calibrate a single device using the pinhole-camera-model. 
+	- CameraCalibration: derived from CalibrationBase. Class for camera calibration. 
 	- ProjectorCalibration: derived from CalibrationBase. 
 
 - Flea3Cam.h: Camera class that gets data from camera using flyCapture2 library (FlyCapture2 2.9.3.43)
 
 - ProjectorSys.h: Projectors class that control projectors using CalibRenderGL.
-	- CalibRenderGL: Rendering Class for Calibration that controls projection patterns using OpenGL, GLEW, GLM, and GLFW (glew-1.12.0, glfw-3.1.1 and glm-0.9.4.0)
+	- CalibRenderGL: Rendering Class for Calibration that controls projection patterns using OpenGL, GLEW, GLM, and GLFW (glew-1.12.0, glfw-3.2 and glm-0.9.4.0)
 
 - DisplayCalibration.h: Core calibration class that calibrates the spherical display and computes 3D position for each pixel on the sphere using Flea3Cam, ProjectorSys and results from CameraCalibration, ProjectorCalibration.
 
@@ -15,12 +15,10 @@
 
 - Shader.h: Shader class for OpenGL
 
-- Texture.h: Texture class for OpenGL
-
 External Libraries: 
 OpenCV-2.4.13
 glew-1.12.0
-glfw-3.1.1
+glfw-3.2
 glm-0.9.4.0
 FlyCapture2-2.9.3.43
 
@@ -28,13 +26,13 @@ FlyCapture2-2.9.3.43
 
 * Camera calibration:
 
-1. When radial distortions are strong: make sure the chart covers each image boundary so that barrel curves are observed.
+1. If strong distortions on lens: make sure the chart reaches image plane boundaries so that barrel curves can be observed.
 
-2. When spatial variance is small, reprojection error will be extremely high.
+2. When spatial variance is small, reprojection error would be high.
 
 !How to use: 
 Uncomment only #define CAM_CALIB in global.h. 
-Run it. Press 's' to start, then detection will be automatic (roughly 2sec per img). Once it reaches a minimum amount of frames, the calibration will be started; then cleaning will be done to remove some frames that have very large reprojection error. (Normally you will want a reprojection error no more than 0.3)
+Press 's' to start, then detection will be automatic (roughly 2sec per img). Once it reaches a minimum amount of frames, the calibration will be triggered, then cleaning will be done to remove frames with large reprojection errors. By the end of calibration, camera intrinsic will be saved (normally with the reprojection error no more than 0.3).
 
 * Projetcor calibration:
 

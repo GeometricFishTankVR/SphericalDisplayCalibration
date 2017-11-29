@@ -13,7 +13,8 @@
 global DATA_DIR;
 
 DATA_DIR = '..\data';
-PROJ_RESOLUTION = [1280 800];
+PROJ_RESOLUTION = [1280 800]; %% Modify the resolution based on the projector 
+
 
 %% Initial Guess %%
 
