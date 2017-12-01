@@ -7,7 +7,7 @@ using namespace multi_proj_calib;
 int main()
 {
 	const int num_proj = 3;
-	bool isOptimized = true;
+	bool isOptimized = false; // change this flag to be true if the params have been optimized by matlab
 
 	DisplayCalibration disp_calib(num_proj);
 	disp_calib.setCalibrationMethod(dp_calib::Auto);
@@ -53,6 +53,7 @@ int main()
 	else
 	{
 		try {
+			/// update params after optimization from maltab
 			disp_calib.updateParams();
 
 			/// compute geometry data 
