@@ -1,0 +1,68 @@
+
+LICENSE AGREEMENT (Academic Use) 
+
+IMPORTANT! The Product is licensed only on the condition that you ("YOU") agree with The University of British Columbia ("UBC") having its administrative offices at 2329 West Mall Vancouver, BC Canada V6T 1Z4 to the terms and conditions set forth below and in the Download Summary screen that is incorporated by reference into this Agreement. 
+
+PLEASE CAREFULLY READ ALL THE TERMS OF THIS LICENSE AGREEMENT. IF YOU DO NOT AGREE TO THE TERMS OF THIS AGREEMENT, YOU ARE NOT AUTHORIZED TO USE THE PRODUCT. 
+
+This is an Agreement between you and all persons you represent (and for purposes of this Agreement, "person" includes natural persons and any type of incorporated or unincorporated entity) and UBC regarding your use of the Product. By agreeing to the terms of this Agreement you signify your acceptance, and the acceptance and agreement of all persons you represent, without limitation or qualification, to be bound by this Agreement, and you represent and warrant that you have the legal authority to agree to and accept this Agreement on behalf of yourself and all persons you represent. 
+
+1. PRODUCT: As used in this Agreement, "Product" shall mean the software (including any related documentation) identified in the Download Summary screen. 
+
+2. LICENSE TO USE: UBC hereby grants to YOU an academic, non-exclusive, non-transferable, limited license to use the Product for academic use solely on the terms, conditions and restrictions contained in this Agreement. You are not permitted to use the Product for commercial purposes. The rights granted to YOU shall be subject to the Restrictions set out in Section 6 below. 
+
+3. AUTHORIZED USER(S): YOU are permitted and are expressly licensed and authorized to use one copy. Such copy will be considered "Authorized Copy" and are only licensed for use by those of YOUR employees, or agents over whom YOU have direct control and who agree to abide by the terms of this License Agreement (each such person will be considered an "Authorized User"). YOU will be directly liable for any infringement of the terms of this License Agreement by any Authorized User. YOU expressly agree that the number of Authorized Users will in no case exceed the number of Authorized Copies. 
+
+4. LICENSE FEE: There are no fees to be paid to UBC for the rights granted to YOU under this Agreement. 
+
+5. OWNERSHIP: YOU acknowledge that the Product and any and all knowledge, know-how and/or techniques relating to the Product, as may be modified or enhanced by UBC, in whole or in part, is and will remain the sole and absolute property of UBC and UBC owns any and all right, title and interest in and to the Product. YOU further acknowledge that all inventions, discoveries, improvements, software, copyright, know-how or other intellectual property, whether or not patentable or copyrightable, created by or on behalf of UBC prior to, after the termination of, or during the course of this Agreement pertaining to the Product is and will remain the sole and absolute property of UBC. No right, title or interest in or to any official mark, trademark, service mark, logo, or trade name of UBC is granted to YOU under this Agreement. Improvements or changes to the Product created by YOU will be the sole property of YOU, provided such improvements are made without infringing the terms of this License Agreement 
+
+6. RESTRICTIONS: Without limiting Section 5, YOU shall not, and shall not authorize any third party to: 
+
+- make copies of the Product, other than:
+(i) any Authorized Copy, and 
+(ii) a single backup copy; 
+- distribute any Authorized Copy or backup copy to any third party who is not an Authorized User. Any such copy together with the original must be kept in YOUR possession or control;
+- modify, decompile, disassemble, translate into another computer language, create derivative works, or otherwise reverse engineer the Product (including any source or object code), or disclose any trade secrets relating to the Product;
+- distribute, sell, lease, transfer, assign, trade, rent or publish the Product or any part thereof and/ or copies thereof, to others;
+- license or sublicense the use of the Product to others;
+- use the Product or any part thereof for any purpose other than the Purpose or in any manner which is otherwise inconsistent with Section 2 above;
+- use, without express permission from UBC, the name of UBC in YOUR advertising, publicity, or otherwise. 
+
+IMPORTANT! 
+
+7. DISCLAIMER OF WARRANTY: THE PRODUCT IS PROVIDED TO YOU BY UBC "AS IS", AND YOU ACKNOWLEDGE AND AGREE THAT UBC MAKES NO REPRESENTATIONS AND EXTENDS NO WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. IN PARTICULAR, TO THE EXTENT PERMITTED BY LAW, UBC EXCLUDES ALL EXPRESS AND IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS OF THE PRODUCT FOR A PARTICULAR PURPOSE, AND THAT THE USE OF THE PRODUCT WILL PRODUCE A DESIRED RESULT OR THAT THE USE OF THE PRODUCT WILL NOT INFRINGE ANY PATENT, COPYRIGHT, TRADEMARK OR OTHER RIGHTS, AND THAT THE PRODUCT IS ERROR-FREE OR VIRUS-FREE, AND ALL OTHER EXPRESS AND IMPLIED WARRANTIES. THE UNITED NATIONS CONVENTION ON THE INTERNATIONAL SALE OF GOODS SHALL NOT APPLY TO THE PROVISIONS OF THIS AGREEMENT. 
+
+IN PARTICULAR, NOTHING IN THIS AGREEMENT SHALL BE CONSTRUED AS: 
+
+- A WARRANTY OR REPRESENTATION BY UBC AS TO ANY INTELLECTUAL PROPERTY RIGHTS IN THE PRODUCT;
+- AN OBLIGATION TO FURNISH ANY ITEM, SOFTWARE, TECHNOLOGY, OR TECHNOLOGICAL INFORMATION OTHER THAN THE PRODUCT;
+- AN OBLIGATION TO CORRECT ERRORS DEEMED TO BE INTERNAL TO THE PRODUCT ("MALFUNCTIONS") THAT ARISE IN ANY VERSION OF THE PRODUCT DELIVERED TO YOU. UBC DOES NOT WARRANT THAT THE PRODUCT IS FREE FROM MALFUNCTIONS, NOR THAT ANY MALFUNCTIONS CAN OR WILL BE CORRECTED NOR THAT UBC WILL DEVELOP OR PROVIDE YOU WITH ANY OPERATIONS, CAPABILITIES OR FEATURES NOT PRESENT IN THE VERSION OF THE PRODUCT DELIVERED TO YOU UNDER THIS AGREEMENT. 
+
+8. LIMITATION OF LIABILITY: UBC WILL NOT BE LIABLE TO YOU, YOUR AUTHORIZED USERS, OR ANY OTHER PERSON OR ENTITY FOR ANY LIABILITY, LOSS OR DAMAGES CAUSED OR ALLEGED TO HAVE BEEN CAUSED, EITHER DIRECTLY OR INDIRECTLY, BY THE PRODUCT. WITHOUT LIMITING THE FOREGOING, IN NO EVENT WILL UBC BE LIABLE FOR ANY LOST REVENUE, PROFIT, BUSINESS INTERRUPTION OR DATA, OR FOR SPECIAL, INDIRECT, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY, ARISING OUT OF OR RELATED TO THE USE OF OR INABILITY TO USE THE PRODUCT, EVEN IF UBC HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. UBC's TOTAL LIABILITY WILL BE LIMITED TO THE AMOUNT OF THE LICENSE FEES (IF ANY) PAID UNDER THIS AGREEMENT. 
+
+9. INDEMNITY: YOU WILL INDEMNIFY, DEFEND AND HOLD HARMLESS UBC, ITS BOARD OF GOVERNORS, FACULTY, STAFF, STUDENTS AND AGENTS FROM AND AGAINST ANY AND ALL LIABILITY, LOSS, DAMAGE, ACTION, CLAIM OR EXPENSE (INCLUDING ATTORNEY'S FEES AND COSTS AT TRIAL AND APPELLATE LEVELS) IN CONNECTION WITH ANY CLAIM, SUIT, ACTION, DEMAND OR JUDGEMENT ARISING OUT OF CONNECTED WITH, RESULTING FROM, OR SUSTAINED AS A RESULT OF YOUR USE OF THE PRODUCT OR OTHERWISE RELATED TO THIS AGREEMENT. 
+
+10. TERM: This Agreement is effective until terminated. This Agreement terminates: 
+- at YOUR election, at any time; or
+- immediately without notice from UBC if YOU fail to comply with any provision of this Agreement, at which time YOU must immediately stop using the Product and must destroy or delete any and all copies of the Product made by or on behalf of YOU. Sections 5 (Ownership), 7 (Disclaimer of Warranty), 8 (Limitation of Liability), 9 (Indemnity), 10 (Term) and 13 (a), (f) and (g) (General Provisions) of this Agreement survive termination of this Agreement.  
+
+11. GOVERNMENT END USERS: US Government end users are not authorized to use the Product under this Agreement. 
+
+12. REPRESENTATION OF AUTHORITY: YOU represent and warrant that YOU possess the legal authority to enter into this Agreement, and that YOU will be financially responsible for YOUR use of the Product. YOU agree to be responsible for all License Fees, costs, charges and taxes arising out of YOUR use of the Product. YOU are responsible for supplying any hardware or software necessary to use the Product pursuant to this Agreement. 
+
+13. GENERAL PROVISIONS: 
+(a) NOTE: ALL DISPUTES TO BE RESOLVED IN VANCOUVER, B.C.: The Product is provided from Vancouver, British Columbia, Canada and this Agreement (and all disputes arising out of or relating to this Agreement) will be governed and interpreted according to the laws of British Columbia, Canada without regard to its conflicts of laws rules. YOU agree that by accepting the terms of this Agreement and using the Product YOU submit to the exclusive jurisdiction of the Courts of competent authority in the City of Vancouver, Province of British Columbia, Canada. 
+(b) USE OF THE PRODUCT IS PROHIBITED IN ANY JURISDICTION WHICH DOES NOT GIVE EFFECT TO THE TERMS OF THIS AGREEMENT. 
+(c) UBC agrees that this Agreement, and each part of it, is confidential and shall not be disclosed to third parties, but UBC may identify the title of and the parties to this Agreement, the term of this Agreement, and the License Fee paid to UBC. 
+(d) YOU agree that no joint venture, partnership, employment, consulting or agency relationship exists between YOU and UBC as a result of this Agreement or YOUR use of the Product. 
+(e) This Agreement is the entire agreement between YOU and UBC relating to this subject matter. YOU will not contest the validity of this Agreement merely because it is in electronic form. 
+(f) No modification of this Agreement will be binding, unless in writing and accepted by an authorized representative of each party. No agent of UBC is authorized to modify this Agreement verbally. 
+(g) The provisions of this Agreement are severable in that if any provision in this Agreement is determined to be invalid or unenforceable under any controlling body of law, that will not affect the validity or enforceability of the remaining provisions of this Agreement. 
+(h) No condoning, excusing or overlooking by UBC of any failure by YOU to comply with any part of this Agreement shall operate as a waiver by UBC of its rights under this Agreement, and no waiver shall be inferred from or implied by anything done or omitted by UBC. 
+(i) All prices are in Canadian dollars and prices are subject to change without notice. UBC will not be liable for any typographical errors, including errors resulting in improperly quoted prices. 
+(j) YOU should print out or download a copy of this Agreement and retain it for YOUR records. 
+(k) YOU consent to the use of the English language in this Agreement and all documents or notices relating to this Agreement. Les parties aux présentes ont exigé que le présent contrat et tous autres contrats, documents ou avis afférents auz présentes soient rédigés en langue anglaise. 
+(l) YOU may not assign this Agreement. UBC, acting in its sole discretion, may assign this Agreement without notice to YOU. 
+
+      
