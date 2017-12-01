@@ -67,6 +67,19 @@ Q. Zhou, G. Miller, K. Wu and S. Fels. [Automatic calibration of a multiple-proj
     - When observed projection area on Surface is too small (close to a plane), the fundamental matrix might be inaccurate. 
     - Blob detection is lighting-sensitive. May require adjusting the camera parameters and detector parameters based on the lighting. 
     - If the overlapping area across projectors is out-of-focus for projectors, the ghosting effect is likely to happen. 
+- Sample data
+  - *cam_calib.xml*: camera intrinsics for the Camera intrinsic calibration example
+  - *proj_calibx.xml*: projector intrinsics of three projectors for the Projector intrinsic calibration example
+  - *ProjxPairBlobData.xml*: the 2D positions of detected patterns per projector-camera pair for the Spherical display calibration example
+  - *extrinsics.xml*: three projectors extrinsics and the sphere pose for the Semi-Automatic mode of Spherical display calibration example
+  - *new_params.xml*: optimized params from matlab, including camera intrinsics, projector intrinscis, extrinsics and sphere pose.
+  - All the sample data are in the data folder using the hardware described below.
+
+# Hardware
+
+- One Camera: Flea3 [FL3-U3-13Y3M-C](https://www.ptgrey.com/flea3-13-mp-mono-usb3-vision-vita-1300-camera)
+- Three Projector: Asus [P2B](https://www.google.ca/search?q=Asus+P2B&oq=Asus+P2B&aqs=chrome..69i57j0l5.391j0j7&sourceid=chrome&ie=UTF-8) 
+- Spherical screen: An acrylic spherical screen with the diameter of 30cm diameter and a projection hole of 21cm diameter
 
 # Dependency
 
@@ -79,11 +92,6 @@ Q. Zhou, G. Miller, K. Wu and S. Fels. [Automatic calibration of a multiple-proj
 - glm-0.9.4.0
 
 - FlyCapture2-2.9.3.43
-
-# Hardware
-
-- Camera: Flea3 [FL3-U3-13Y3M-C](https://www.ptgrey.com/flea3-13-mp-mono-usb3-vision-vita-1300-camera)
-- Projector: Asus [P2B](https://www.google.ca/search?q=Asus+P2B&oq=Asus+P2B&aqs=chrome..69i57j0l5.391j0j7&sourceid=chrome&ie=UTF-8) 
 
 
 
