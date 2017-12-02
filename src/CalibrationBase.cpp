@@ -210,7 +210,7 @@ namespace multi_proj_calib
 				r = m_rot_vecs[i].t();
 				t = m_transl_vecs[i].t();
 			}
-			cvWriteComment(*fs, "a set of 6-tuples (rotation vector + translation vector) for each view", 0);
+			cvWriteComment(*fs, "a set of 6-tuples (rotation vector + translation vector) for each board", 0);
 			fs << "extrinsic_parameters" << bigmat;
 			fs.release();
 		}

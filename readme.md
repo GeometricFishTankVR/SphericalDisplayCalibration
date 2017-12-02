@@ -61,7 +61,7 @@ Q. Zhou, G. Miller, K. Wu and S. Fels. [Automatic calibration of a multiple-proj
       - Once all projectors have projected, feature data will be saved. If it is in the Semi-automatic mode, the initial guess of projector extrinsics and sphere pose will also be saved. 
     - Run *main_automatic_calib.m* in Matlab if using automatic calibration mode, or *main_semiauto_calib.m* if using semiautomatic calibration mode. In the automatic calibration mode, an initial guess of extrinsics and sphere pose will be first generated and non-linear optimization will be applied. In the semiautomatic calibration mode, the initial guess will be read from file and non-linear optimization will be applied on that. Refined parameters will be saved after the optimization.
     - Go back to *SphericalDisplayCalibApplication.cpp*, change the isOptimized flag to be true and run it. It will compute 3d coordinates and alpha mask automatically. By the end of computation, a stitched grid pattern will appear.
-  - Video: TODO
+  - Video: [auto](https://youtu.be/Fs4aBVG1dpM) [semiauto](https://youtu.be/V2vnG_PL8KQ)
   - Notes:
     - When the baseline between camera and projector is too short, the fundamental matrix might be inaccurate.
     - When observed projection area on Surface is too small (close to a plane), the fundamental matrix might be inaccurate. 

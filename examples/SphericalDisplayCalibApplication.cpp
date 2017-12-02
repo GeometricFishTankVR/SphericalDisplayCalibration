@@ -7,10 +7,10 @@ using namespace multi_proj_calib;
 int main()
 {
 	const int num_proj = 3;
-	bool isOptimized = false; // change this flag to be true if the params have been optimized by matlab
+	bool isOptimized = true; // change this flag to be true if the params have been optimized by matlab
 
 	DisplayCalibration disp_calib(num_proj);
-	disp_calib.setCalibrationMethod(dp_calib::Auto);
+	disp_calib.setCalibrationMethod(dp_calib::SemiAuto);
 	try {
 		disp_calib.setup();
 		disp_calib.testWindowSequence();

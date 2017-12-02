@@ -400,7 +400,7 @@ namespace multi_proj_calib
 			unsigned char header[124];
 			FILE *fp;
 
-			fp = fopen(file.data(), "rb");
+			fopen_s(&fp, file.data(), "rb");
 			if (fp == NULL)
 				throw std::runtime_error("CalibRenderGL::loadDDSFile() fails: can't find file " + file);
 

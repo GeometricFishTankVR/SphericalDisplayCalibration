@@ -467,7 +467,7 @@ namespace multi_proj_calib
 
 		if (!fs.isOpened())
 		{
-			throw std::runtime_error("Failed to open "+file::optimparam_file);
+			throw std::runtime_error("\nFailed to open "+ file::data_path + file::optimparam_file);
 		}
 
 		cout << endl;

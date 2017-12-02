@@ -32,8 +32,8 @@ proj_dist = zeros(1,5);
 proj_mats = zeros(3,3,N_PROJ);
 
 for idx = 1: N_PROJ
-    dir = [DATA_DIR  '\proj_calib' num2str(idx) '.xml'];
-    [ proj_mats(:,:,idx) ] = func_readProjIntrinsicFile( dir );
+    filedir = [DATA_DIR  '\proj_calib' num2str(idx) '.xml'];
+    [ proj_mats(:,:,idx) ] = func_readProjIntrinsicFile( filedir );
 end
 
 

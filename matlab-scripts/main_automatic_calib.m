@@ -104,16 +104,17 @@ for idx = 2:N_PROJ
     Xc_n = [Xc_n Xc{idx}];
 end
 
-[ sphere_p, r_p, residue ] = func_sphere_fit_WLS( Xc_n, diag(W_n),true);
-title('Reconstructed 3D points of all projector: initial guess');
+[ sphere_p, r_p, residue ] = func_sphere_fit_WLS( Xc_n, diag(W_n),false);
 disp(['residue:' num2str(residue)]);
 
-if residue > 0.25
+if residue > 0.2
     disp('Residue too large, Re-run the script');
     clear;
     main_automatic_calib;
     return;
 end
+[ sphere_p, r_p, residue ] = func_sphere_fit_WLS( Xc_n, diag(W_n),true);
+title('Reconstructed 3D points of all projector: initial guess');
 
 %% lsqnonlin refinement %%
 

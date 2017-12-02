@@ -424,7 +424,8 @@ namespace multi_proj_calib
 
 	void Pixel3DArray::loadPixel3DArray(const std::string& file, const std::string& dataType)
 	{
-		FILE *pfile = fopen(file.data(), "rb");
+		FILE *pfile; 
+		fopen_s(&pfile, file.data(), "rb");
 		if (pfile == NULL)
 		{
 			throw std::runtime_error("Pixel3DArray::loadPixel3DArray() fails: cannot find file " + file);
@@ -471,7 +472,8 @@ namespace multi_proj_calib
 
 	void Pixel3DArray::saveFloatArrayToBinFile(std::string file, float* pData, uint size)
 	{
-		FILE* pfile = fopen(file.data(), "wb");
+		FILE* pfile;
+		fopen_s(&pfile, file.data(), "wb");
 		if (pfile == NULL)
 			throw std::runtime_error("Pixel3DArray::saveFloatArrayToBinFile() fails: cannot save file " + file);
 

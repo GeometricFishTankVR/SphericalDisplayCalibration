@@ -28,10 +28,10 @@ if isPlot
     y1 = y*R_est  + b_est;
     z1 = z*R_est  + c_est;
     mesh(x1,y1,z1,'Marker','.')
-
+end
     vec = bsxfun(@minus, X_cam, Scenter);
     dist = bsxfun(@minus, sqrt(vec(1,:).^2 + vec(2,:).^2 +vec(3,:).^2), R_est);
     residue = sqrt(mean(dist.^2));
-end
+
 end
 
