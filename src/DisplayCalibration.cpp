@@ -16,7 +16,7 @@ namespace multi_proj_calib
 		/* tweak these params based on the lighting condition */
 		m_camera.setParams("exposure", 0.f);
 		m_camera.setParams("brightness", 0.f);
-		m_camera.setParams("shutter", 8.0f);
+		m_camera.setParams("shutter", 9.0f);
 		m_camera.setParams("gain", 0.f);
 
 		if (m_camera.startCap()){ 
@@ -182,7 +182,6 @@ namespace multi_proj_calib
 		uint buf_size = buf_width * buf_height;
 
 		m_blobs.setupBlobDetector();
-		m_blobs.setTotalBlobCnt(setting::blob_count);
 		m_blobs.resetBlobs();
 
 		m_mode = idle;

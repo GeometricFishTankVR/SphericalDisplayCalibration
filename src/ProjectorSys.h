@@ -34,7 +34,7 @@ namespace multi_proj_calib {
 		//! load pattern 
 		void initPattern(render::RenderPattern pattern)
 		{
-			m_render.loadPattern(pattern, 40);
+			m_render.loadPattern(pattern, setting::blob_radius);
 		}
 
 		//! clear pattern

@@ -34,7 +34,7 @@ namespace multi_proj_calib
 			static const int m_pattern_rows = 10;
 			static const int m_pattern_cols = 8;
 
-			CalibRenderGL(uint width = setting::proj_width, uint height = setting::proj_height, uint win_count = 1, uint frm_rate = 60)
+			CalibRenderGL(uint width = setting::proj_width, uint height = setting::proj_height, uint win_count = 1, uint frm_rate = 120)
 				: m_width(width), m_height(height), m_num_window(win_count + 1) // always plus one for primary dbg monitor
 			{
 				int err;

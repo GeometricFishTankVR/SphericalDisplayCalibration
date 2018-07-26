@@ -19,7 +19,7 @@ namespace multi_proj_calib
 		return m_projected_blob;
 	}
 	
-	Point2f BlobPattern::generateBlobGrid(const Size& proj_img_size, const float blob_radius_pixel)
+	Point2f BlobPattern::generateBlobGrid(const Size& proj_img_size)
 	{
 		float d_width = (float)(proj_img_size.width - 1) / (float)(m_grid_size.width + 1);
 	    float d_height = (float)(proj_img_size.height - 1) / (float)(m_grid_size.height + 1);

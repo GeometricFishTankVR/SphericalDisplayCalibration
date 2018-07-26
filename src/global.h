@@ -23,7 +23,8 @@ namespace multi_proj_calib
 		extern const int cam_height;
 		extern const uint cv_pixel_format;
 		extern const float blob_radius;
-		extern const int blob_count;
+		extern const int blob_col;
+		extern const int blob_row;
 	}
 
 	namespace file

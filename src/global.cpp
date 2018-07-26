@@ -4,13 +4,14 @@ namespace multi_proj_calib
 {
 	namespace setting
 	{
-		extern const int proj_width = 1280;
-		extern const int proj_height = 800;
+		extern const int proj_width = 1024;
+		extern const int proj_height = 768;
 		extern const int cam_width = 1280;
 		extern const int cam_height = 1024;
 		extern const uint cv_pixel_format = CV_8UC1;
-		extern const float blob_radius = 50.f;
-		extern const int blob_count = 80;
+		extern const float blob_radius = 20.f;
+		extern const int blob_col = 15;
+		extern const int blob_row = 18;
 	}
 
 	namespace file
