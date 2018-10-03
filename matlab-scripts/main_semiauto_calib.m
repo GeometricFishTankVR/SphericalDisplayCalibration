@@ -75,14 +75,15 @@ end
 p0 = [ p0; S; 
        fc_cam'; cc_cam'; 
        [cam_dist(1:2) cam_dist(5)]'; cam_dist(3:4)';];
-
+  
+   
 % set lower/upper bound of params wrt the initial guess
-ratio = .5; %% play with this param based on the accuracy of initial guess
+ratio = 5.0; %% play with this param based on the accuracy of initial guess
 lb = p0 - abs(p0) * ratio;
 ub = p0 + abs(p0) * ratio;
 
 % setup lsqnonlin()
-options = optimoptions('lsqnonlin','Display','iter');
+options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','Display','iter');
 options.Jacobian = 'on';
 options.MaxIter = 200;
 options.InitDamping = 500;

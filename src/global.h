@@ -17,6 +17,7 @@ namespace multi_proj_calib
 	
 	namespace setting
 	{
+		extern int num_proj;
 		extern const int proj_width;
 		extern const int proj_height;
 		extern const int cam_width;

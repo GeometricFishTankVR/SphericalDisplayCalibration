@@ -460,48 +460,78 @@ namespace multi_proj_calib
 		}
 	}
 
-	bool DisplayCalibration::updateParams()
+	bool DisplayCalibration::updateParams(bool isFromMatlab, std::vector<double> new_param )
 	{
-		FileStorage fs(file::data_path+file::optimparam_file, FileStorage::READ);
+		std::vector<Mat_<float>> proj_param;
+		Mat_<float> sphere_param;
+		Mat_<float> cam_param;
+		proj_param.resize(m_num_proj);
 
-		if (!fs.isOpened())
+		if (isFromMatlab)
 		{
-			throw std::runtime_error("\nFailed to open "+ file::data_path + file::optimparam_file);
+			FileStorage fs(file::data_path + file::optimparam_file, FileStorage::READ);
+
+			if (!fs.isOpened())
+			{
+				throw std::runtime_error("\nFailed to open " + file::data_path + file::optimparam_file);
+			}
+
+			cout << endl;
+			cout << "Update optimized parameters from file: " << file::optimparam_file << endl;
+
+			for (unsigned int i = 0; i < m_num_proj; i++)
+			{
+				string param_name = "proj" + std::to_string(i) + "_param";
+				fs[param_name] >> proj_param[i];
+			}
+
+			fs["sphere_pose"] >> sphere_param;
+
+			fs["cam_param"] >> cam_param;
+
+			fs.release();
 		}
-
-		cout << endl;
-		cout << "Update optimized parameters" << endl;
-
-		for (unsigned int i = 0; i < m_num_proj; i++)
+		else
 		{
-			string param_name = "proj" + std::to_string(i) + "_param";
-			Mat_<float> proj_param;
-			fs[param_name] >> proj_param;
+			for (unsigned int i = 0; i < m_num_proj; i++)
+			{
+				if (new_param.empty())
+					throw std::runtime_error("\nUpdateParams() Fails: new_param cannot be empty.  ");
+				
+				proj_param[i] = cv::Mat(10, 1, CV_32FC1);
+				for (int k = 0; k < 10; k++)
+					proj_param[i].at<float>(k) = static_cast<float> (new_param[k + i * 10]);
+			}
 			
+			sphere_param = cv::Mat(4, 1, CV_32FC1);
+			for (int k = 0; k < 4; k++)
+				sphere_param.at<float>(k) = static_cast<float> (new_param[k + m_num_proj * 10]);
+			
+			cam_param = cv::Mat(9, 1, CV_32FC1);
+			for (int k = 0; k < 9; k++)
+				cam_param.at<float>(k) = static_cast<float> (new_param[k + m_num_proj * 10 + 4]);
+		}
+		/// re-assign optimized value back
+		for (int i = 0; i < m_num_proj; i++)
+		{
 			/* projector intrinsics */
-			Mat_<float> proj_KK = (Mat_<float>(3, 3) << proj_param(0), 0.f, proj_param(2),
-				0.f, proj_param(1), proj_param(3),
+			Mat_<float> proj_KK = (Mat_<float>(3, 3) << proj_param[i](0), 0.f, proj_param[i](2),
+				0.f, proj_param[i](1), proj_param[i](3),
 				0.f, 0.f, 1.f);
 			Mat_<float> proj_dist = (Mat_<float>(5, 1) << 0.f, 0.f, 0.f, 0.f, 0.f);
 			m_proj_calib[i].updateCameraMatrix(proj_KK);
 			m_proj_calib[i].updateDistortCoeff(proj_dist);
 
 			/* projector extrinsics */
-			Mat_<float> est_rvec = (Mat_<float>(3, 1) << proj_param(4), proj_param(5), proj_param(6));
+			Mat_<float> est_rvec = (Mat_<float>(3, 1) << proj_param[i](4), proj_param[i](5), proj_param[i](6));
 			cv::Rodrigues(est_rvec, m_proj_calib[i].getExtrinsicRmat());
-			m_proj_calib[i].getExtrinsicTvec() = (Mat_<float>(3, 1) << proj_param(7), proj_param(8), proj_param(9));
+			m_proj_calib[i].getExtrinsicTvec() = (Mat_<float>(3, 1) << proj_param[i](7), proj_param[i](8), proj_param[i](9));
 		}
 		
 		/* sphere pose */
-		Mat_<float> sphere_param;		
-		fs["sphere_pose"] >> sphere_param;
-
 		m_sphere_pose = (Mat_<float>(4, 1) << sphere_param(0), sphere_param(1), sphere_param(2), sphere_param(3));
-
+		
 		/* camera */
-		Mat_<float> cam_param;
-		fs["cam_param"] >> cam_param;
-
 		Mat_<float> cam_KK = (Mat_<float>(3, 3) << cam_param(0), 0.f, cam_param(2),
 			0.f, cam_param(1), cam_param(3),
 			0.f, 0.f, 1.f);
@@ -509,10 +539,56 @@ namespace multi_proj_calib
 		m_cam_calib.updateCameraMatrix(cam_KK);
 		m_cam_calib.updateDistortCoeff(cam_dist);
 
-		fs.release();
 		return true;
 	}
 
+	void DisplayCalibration::lmOptimize()
+	{
+		/* 1. Prepare the param */
+		std::vector<double> params;
+		/// projector params: m_num_proj * 10
+		for (auto proj : m_proj_calib)
+		{
+			Mat_<double> intrin_mat = proj.getCameraMatrix();
+			params.push_back(intrin_mat.at<double>(0, 0));
+			params.push_back(intrin_mat.at<double>(1, 1));
+			params.push_back(intrin_mat.at<double>(0, 2));
+			params.push_back(intrin_mat.at<double>(1, 2));
+
+			Mat_<double> R_vec = proj.getExtrinsicRvec();
+			for (int i = 0; i < R_vec.total(); i++)
+				params.push_back(R_vec.at<double>(i));
+
+			Mat_<double> T_vec = proj.getExtrinsicTvec();
+			for (int i = 0; i < T_vec.total(); i++)
+				params.push_back(T_vec.at<double>(i));
+		}
+		/// sphere pose params: 4 sphere
+		for (int i = 0; i < m_sphere_pose.total(); i++)
+			params.push_back(m_sphere_pose.at<double>(i));
+		
+		/// camera params: 4 intrinsic + 5 lens distortion
+		Mat_<double> intrin_mat = m_cam_calib.getCameraMatrix();
+		params.push_back(intrin_mat.at<double>(0, 0));
+		params.push_back(intrin_mat.at<double>(1, 1));
+		params.push_back(intrin_mat.at<double>(0, 2));
+		params.push_back(intrin_mat.at<double>(1, 2));
+		Mat_<double> distort_vec = m_cam_calib.getDistortCoeff();
+		params.push_back(distort_vec.at<double>(0));
+		params.push_back(distort_vec.at<double>(1));
+		params.push_back(distort_vec.at<double>(4));
+		params.push_back(distort_vec.at<double>(2));
+		params.push_back(distort_vec.at<double>(3));
+		
+		/* 2. Optimize param */
+		try {
+			m_optimizer.runNonLinearOptimize(m_cam_pts, m_proj_pts, params);
+		}
+		catch (std::runtime_error& e) { std::cerr << e.what() << std::endl; }
+
+		/* 3. Put optimized param back */
+		updateParams(false, params);
+	}
 	void DisplayCalibration::computePixel3D()
 	{		
 		uint i(0);

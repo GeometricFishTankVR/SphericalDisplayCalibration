@@ -17,9 +17,10 @@ err = null(1);
 J = null(1);
 
 for idx = 1:num_proj
+    %% for each projector
     vec_p = [p( idx*10-9 : idx*10 ); 
-                      p( num_proj*10+1 : num_proj*10+13 )];
-    [err_p, A, B, C] = func_F(vec_p, idx);   
+                      p( num_proj*10+1 : num_proj*10+13 )]; % get its params
+    [err_p, A, B, C] = func_F(vec_p, idx);   % compute J and error based on params
     len = length(A);
     J_row = zeros(len, num_proj*10);
     range = (idx*10-9) : (idx*10);
@@ -27,6 +28,5 @@ for idx = 1:num_proj
     J = [J; J_row B C];
     err = [err;err_p];  
 end
-
 end
 

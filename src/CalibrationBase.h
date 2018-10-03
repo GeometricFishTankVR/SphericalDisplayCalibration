@@ -25,12 +25,12 @@ namespace multi_proj_calib
 	{
 	public:
 		CalibrationBase():  m_mincalib_frame(6), m_total_frame(20), m_reproj_err(0), m_square_size(1),
-							m_pattern(CHECKER_BOARD), m_cam_mat(cv::Mat::eye(3, 3, CV_32F)),
-							m_dist_coeff(cv::Mat::zeros(8, 1, CV_32F)), m_pattern_size(cv::Size(8, 6)),
+							m_pattern(CHECKER_BOARD), m_cam_mat(cv::Mat::eye(3, 3, CV_64F)),
+							m_dist_coeff(cv::Mat::zeros(8, 1, CV_64F)), m_pattern_size(cv::Size(8, 6)),
 							m_img_size(cv::Size(setting::cam_width, setting::cam_height)), m_msg("press 's' to start") {}
 		CalibrationBase(cv::Size resolution, int total_frame, CalibrationPattern pattern, cv::Size pattern_size, std::string msg)
 			: m_img_size(resolution), m_total_frame(total_frame), m_pattern(pattern), m_pattern_size(pattern_size), 
-			  m_cam_mat(cv::Mat::eye(3, 3, CV_32F)), m_dist_coeff(cv::Mat::zeros(8, 1, CV_32F)), m_msg(msg) {}
+			  m_cam_mat(cv::Mat::eye(3, 3, CV_64F)), m_dist_coeff(cv::Mat::zeros(8, 1, CV_64F)), m_msg(msg) {}
 		
 		virtual ~CalibrationBase(){}
 		

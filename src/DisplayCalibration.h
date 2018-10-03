@@ -21,6 +21,7 @@
 #include "Flea3Cam.h"
 #include "Pixel3DArray.h"
 
+#include "LmOptimizer.h"
 #include "FundamentalMat.h"
 #include "BackGroundSubstractor.h"
 #include "BlobPattern.h"
@@ -76,8 +77,11 @@ namespace multi_proj_calib
 		// display calibration result: it should appear to be a grid pattern from camera viewpoint
 		bool displayCorrectedPattern();
 
-		// Read refined parameters from matlab
-		bool updateParams();
+		// update refined parameters  
+		bool updateParams(bool isFromMatlab, std::vector<double> new_param = std::vector<double>());
+
+		// Nonlinear Optimization using lm methord
+		void lmOptimize();
 
 		// save calibration result to dir with file names defined in global.h
 		void saveCalibrationResult(std::string dir = std::string());
@@ -86,7 +90,7 @@ namespace multi_proj_calib
 		void loadCalibrationResult(std::string dir = std::string());
 
 		// read blob data from xml files
-		bool loadBlobData(const std::string& file_name);
+		bool loadBlobData(const std::string& file_name); //todo may not in use
 
 		// save an initial guess of extrinsic and sphere pose parameters
 		bool saveExtrinsics(const std::string& file_name);
@@ -113,7 +117,7 @@ namespace multi_proj_calib
 
 	protected:
 		
-		///***** Member Methods ******///
+		///***** Member Methods *****///
 
 		bool triangulatePairFeature(const std::vector<cv::Point2f>& cam_blobs_nml, const cv::Mat& cam_proj_mat, const std::vector<cv::Point2f>& proj_blobs_nml, const cv::Mat& proj_proj_mat, std::vector<cv::Point3f>& obj_pts);
 
@@ -123,7 +127,7 @@ namespace multi_proj_calib
 		// sphere pose estimation Linear Weighted Least Square
 		double linearWLSSpherePose(const std::vector<cv::Point3f>& blobs, const std::vector<float>& weight, cv::Mat_<double>& sphere_pose);
 
-		///***** Member Data ******///
+		///***** Member Data *****///
 		
 		uint m_num_proj;
 		uint m_curr_proj;
@@ -139,12 +143,13 @@ namespace multi_proj_calib
 		std::vector<ProjectorCalibration> m_proj_calib; // projector calibration for each projector
 		ProjectorSys m_projectors; // projector displays
 		Flea3Cam m_camera; // camera control
-		
+		LmOptimizer m_optimizer;
+
 		BlobPattern m_blobs; // projected pattern
 		std::vector<Pixel3DArray> m_pixelarray;  // store and compute geometry data and alpha mask for each projector
 
-		std::vector<std::vector<cv::Point2f>> m_cam_pts;
-		std::vector<std::vector<cv::Point2f>> m_proj_pts;
+		std::vector<std::vector<cv::Point2f>> m_cam_pts; //todo: may not in use
+		std::vector<std::vector<cv::Point2f>> m_proj_pts;//todo: may not in use
 		std::vector<std::vector<cv::Point3f>> m_obj_pts;
 		std::vector<std::vector<float>> m_reproj_err;
 	};

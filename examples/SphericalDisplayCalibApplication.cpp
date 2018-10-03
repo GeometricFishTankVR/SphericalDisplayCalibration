@@ -6,10 +6,10 @@ using namespace multi_proj_calib;
 
 int main()
 {
-	const int num_proj = 4;
-	bool isOptimized = false; // change this flag to be true if the params have been optimized by matlab
+	setting::num_proj = 4;
+	bool isOptimized =  false; // change this flag to be true if the params have been optimized by matlab
 
-	DisplayCalibration disp_calib(num_proj);
+	DisplayCalibration disp_calib(setting::num_proj);
 	disp_calib.setCalibrationMethod(dp_calib::SemiAuto);
 	try {
 		disp_calib.setup();
@@ -22,7 +22,7 @@ int main()
 
 	if (!isOptimized){
 		try {
-			while (disp_calib.getCurrProjector() <= num_proj)
+			while (disp_calib.getCurrProjector() <= setting::num_proj)
 			{
 				/// Project and capture blob pattern
 				if (disp_calib.calibratePair()){
@@ -44,6 +44,20 @@ int main()
 				disp_calib.estimateSpherePose();
 				disp_calib.saveExtrinsics(file::data_path + file::extrinsic_file);
 			}
+			disp_calib.lmOptimize();
+			
+			/// compute geometry data 
+			disp_calib.computePixel3D();
+
+			/// create alpha mask 
+			disp_calib.computeAlphaMask();
+
+			/// Normalize and save the geometry or blending data
+			disp_calib.saveCalibrationResult("C:\\Users\\HCT-SPHEREE\\Documents\\SPHEREE-RESEARCH\\source-code\\siggraph-branch\\Unity\\VolumetricDisplay\\CalibrationFiles\\");
+
+			/// display the calibrated result
+			disp_calib.displayCorrectedPattern();
+
 		}
 		catch (const std::runtime_error& e) {
 			std::cerr << e.what() << std::endl;
@@ -53,20 +67,21 @@ int main()
 	else
 	{
 		try {
+
 			/// update params after optimization from maltab
-			disp_calib.updateParams();
+			//disp_calib.updateParams(true);
 
-			/// compute geometry data 
-			disp_calib.computePixel3D();
+			///// compute geometry data 
+			//disp_calib.computePixel3D();
 
-			/// create alpha mask 
-			disp_calib.computeAlphaMask();
+			///// create alpha mask 
+			//disp_calib.computeAlphaMask();
 
-			/// Normalize and save the geometry or blending data
-			disp_calib.saveCalibrationResult();
+			///// Normalize and save the geometry or blending data
+			//disp_calib.saveCalibrationResult("C:\\Users\\HCT-SPHEREE\\Documents\\SPHEREE-RESEARCH\\source-code\\siggraph-branch\\Unity\\VolumetricDisplay\\CalibrationFiles\\");
 
-			/// display the calibrated result
-			disp_calib.displayCorrectedPattern();
+			///// display the calibrated result
+			//disp_calib.displayCorrectedPattern();
 		}
 		catch (std::runtime_error& e){
 			std::cerr << e.what() << std::endl;

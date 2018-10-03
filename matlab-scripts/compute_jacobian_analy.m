@@ -98,16 +98,29 @@ Jdxdkc = jacobian(x_c, [kc1 kc2 kc3 pc1 pc2]); % 2 by 5
 
 % J_dxdp = [J_dxdfp J_dxdcp J_dxdR J_dxdT J_dxdS J_dxdfc J_dxdcc J_dxdkc];
 
- matlabFunction(JdxdX, 'File', 'JdxdX','Vars',[X1, X2, X3, fx_c, fy_c, cx_c, cy_c, kc1, kc2, kc3, pc1, pc2]);
- matlabFunction(Jdxdfc, 'File', 'Jdxdfc','Vars',[X1, X2, X3, fx_c, fy_c, cx_c, cy_c, kc1, kc2, kc3, pc1, pc2]);
- matlabFunction(Jdxdcc, 'File', 'Jdxdcc','Vars',[X1, X2, X3, fx_c, fy_c, cx_c, cy_c, kc1, kc2, kc3, pc1, pc2]);
- matlabFunction(Jdxdkc, 'File', 'Jdxdkc','Vars',[X1, X2, X3, fx_c, fy_c, cx_c, cy_c, kc1, kc2, kc3, pc1, pc2]);
+%% Convert to m files
+%  matlabFunction(JdxdX, 'File', 'JdxdX','Vars',[X1, X2, X3, fx_c, fy_c, cx_c, cy_c, kc1, kc2, kc3, pc1, pc2]);
+%  matlabFunction(Jdxdfc, 'File', 'Jdxdfc','Vars',[X1, X2, X3, fx_c, fy_c, cx_c, cy_c, kc1, kc2, kc3, pc1, pc2]);
+%  matlabFunction(Jdxdcc, 'File', 'Jdxdcc','Vars',[X1, X2, X3, fx_c, fy_c, cx_c, cy_c, kc1, kc2, kc3, pc1, pc2]);
+%  matlabFunction(Jdxdkc, 'File', 'Jdxdkc','Vars',[X1, X2, X3, fx_c, fy_c, cx_c, cy_c, kc1, kc2, kc3, pc1, pc2]);
+% 
+% 
+%  matlabFunction(JdXdfp, 'File', 'JdXdfp','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
+%  matlabFunction(JdXdcp, 'File', 'JdXdcp','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
+%  matlabFunction(JdXdR, 'File', 'JdXdR','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
+%  matlabFunction(JdXdT, 'File', 'JdXdT','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
+%  matlabFunction(JdXdS, 'File', 'JdXdS','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
 
+%% Convert to c-code files
 
- matlabFunction(JdXdfp, 'File', 'JdXdfp','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
- matlabFunction(JdXdcp, 'File', 'JdXdcp','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
- matlabFunction(JdXdR, 'File', 'JdXdR','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
- matlabFunction(JdXdT, 'File', 'JdXdT','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
- matlabFunction(JdXdS, 'File', 'JdXdS','Vars',[fx_p, fy_p, cx_p, cy_p, r11, r21, r31, r12, r22, r32, r13, r23, r33, t1, t2, t3, s1,s2,s3,r, x1_p,x2_p]);
-
-
+  ccode(JdxdX, 'File', 'JdxdX.c');
+  ccode(Jdxdfc, 'File', 'Jdxdfc.c');
+  ccode(Jdxdcc, 'File', 'Jdxdcc.c');
+  ccode(Jdxdkc, 'File', 'Jdxdkc.c');
+% 
+% 
+  ccode(JdXdfp, 'File', 'JdXdfp.c');
+  ccode(JdXdcp, 'File', 'JdXdcp.c');
+  ccode(JdXdR, 'File', 'JdXdR.c');
+  ccode(JdXdT, 'File', 'JdXdT.c');
+  ccode(JdXdS, 'File', 'JdXdS.c');

@@ -48,7 +48,6 @@ KK_p = [f_p(1) 0      c_p(1);
 C = -R'* T; % 3 by 1
 C_S = C - S; % 3 by 1
 
-
 V = ( KK_p * R ) \ x_proj_h; % vector: 3 by N
 
 a = V(1,:).^2 +  V(2,:).^2 + V(3,:).^2; % row vector: 1 by N
@@ -61,6 +60,7 @@ lambda = (sqrt(b2_4ac) - b)./a/2; % vector: 1 by N
 temp = bsxfun(@times, V, lambda);
 X = bsxfun(@plus, temp, C); % C + V*lambda: vector 3 by N
 
+
 outLiner_idx = find(b2_4ac < 0);
 if ~isempty( outLiner_idx )
     disp(['not intersect!'])
@@ -68,8 +68,6 @@ if ~isempty( outLiner_idx )
     temp = bsxfun(@times, V(:,outLiner_idx), lambda(outLiner_idx));
     X(:,outLiner_idx) = bsxfun(@plus, temp, C); % C + V*lambda: vector 3 by N
 end
-
-
 
 % camera projection
 
@@ -95,6 +93,7 @@ x_cam = reshape(pt1,2,length(pt1)/2); % 2 by N
 
 %% compute error %%
 err = x_cam_est - x_cam;
+
 err = err(:); % output: 2N by 1
 
 %% compute jacobian %%
