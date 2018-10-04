@@ -62,8 +62,13 @@ namespace multi_proj_calib
 		%		fi: pixel error for all points of all projectors.
 		%		  [ P11x P11y P12x P12y ...  P21x P21y P22x P22y ...   ]
 		%		  |<- projector 1 points ->|<- projector 2 points ->| ...
-		%		jac: a large jacobian matrix for all points and params
-		%		  todo
+		%		jac: a large jacobian matrix for all points and params.
+		%            An example of jac with 4 projectors:
+		%		  |proj1 param|proj2 param|proj3 param|proj4 param|sphere param|camera param|
+		% proj1pts[    A1          0            0           0			B1           C1     ]
+		% proj2pts[    0           A2           0           0			B2           C2     ]
+		% proj3pts[    0           0            A3          0			B3           C3     ]
+		% proj4pts[    0           0            0           A4			B4           C4     ]
 		%
 		*/
 		
@@ -97,6 +102,12 @@ namespace multi_proj_calib
 		static std::vector<std::vector<cv::Point2f>> m_projpts;
 
 		static int m_Nproj;
+
+		struct blob_not_intersect : public std::exception {
+			const char * what() const throw () {
+				return "blob_not_intersect exception";
+			}
+		};
 	};
 }
 

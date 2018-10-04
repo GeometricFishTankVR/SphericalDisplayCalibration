@@ -17,34 +17,55 @@ namespace multi_proj_calib
 	
 	namespace setting
 	{
-		extern int num_proj;
-		extern const int proj_width;
-		extern const int proj_height;
-		extern const int cam_width;
-		extern const int cam_height;
-		extern const uint cv_pixel_format;
-		extern const float blob_radius;
-		extern const int blob_col;
-		extern const int blob_row;
+		namespace camera
+		{
+			extern int res_width; //resolution
+			extern int res_height;
+			extern uint cv_pixel_format;
+			extern int checkerboard_col; //pattern size
+			extern int checkerboard_row;
+			extern double max_reproj_error; 
+		}
+
+		namespace proj
+		{
+			extern int res_width; //resolution
+			extern int res_height;
+			extern int blobs_col; //pattern size
+			extern int blobs_row;
+			extern double max_reproj_error;
+		}
+
+		namespace display
+		{
+			extern int num_proj;
+			extern int blobs_col;
+			extern int blobs_row;
+			extern float blob_radius;
+			extern double max_reproj_error;
+			extern double max_spherepose_error;
+		}
 	}
 
 	namespace file
 	{
-		extern const std::string camcalib_file;
-		extern const std::string projcalib_file[4];
-		extern const std::string blob_file[4];
-		extern const std::string extrinsic_file;
-		extern const std::string gridtexture_file;
-		extern const std::string optimparam_file;
-		extern const std::string geom_file[4];
-		extern const std::string camgeom_file;
-		extern const std::string blen_file[4];
-		extern const std::string data_path;
-		extern const std::string src_path;
+		extern std::string camcalib_file;
+		extern std::string projcalib_file[4];
+		extern std::string blob_file[4];
+		extern std::string extrinsic_file;
+		extern std::string gridtexture_file;
+		extern std::string optimparam_file;
+		extern std::string geom_file[4];
+		extern std::string blen_file[4];
+		extern std::string camgeom_file;
+		extern std::string data_path;
+		extern std::string src_path;
 	}
 
 	namespace utils
 	{
+		// todo: load json file
+		
 		template <typename T> inline int sgn(T val)
 		{
 			return (T(0) < val) - (val < T(0));
@@ -57,8 +78,7 @@ namespace multi_proj_calib
 			}
 		};
 
-		template <typename T>
-		bool isInRange(const T& value, const T& low, const T& high) {
+		template <typename T> bool isInRange(const T& value, const T& low, const T& high) {
 			return (value >= low) && (value < high);
 		};
 	}

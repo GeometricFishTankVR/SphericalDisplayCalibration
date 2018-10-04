@@ -27,13 +27,13 @@ namespace multi_proj_calib
 	class BlobPattern
 	{
 	public:
-		BlobPattern() :m_blob_detector(), m_blob_total_count(60), m_curr_cir(cv::Size(1,1)), m_grid_size(cv::Size(setting::blob_row, setting::blob_col)) {}
+		BlobPattern() :m_blob_detector(), m_blob_total_count(60), m_curr_cir(cv::Size(1,1)), m_grid_size(cv::Size(setting::display::blobs_row, setting::display::blobs_col)) {}
 		
 		// return position of a random blob (not in use)
-		cv::Point2f generateRandomBlob(const cv::Size& proj_img_size = cv::Size(setting::proj_width, setting::proj_height), const float blob_radius_pixel = setting::blob_radius);
+		cv::Point2f generateRandomBlob(const cv::Size& proj_img_size = cv::Size(setting::proj::res_width, setting::proj::res_height), const float blob_radius_pixel = setting::display::blob_radius);
 		
 		// return position of a single blob within a grid of blobs
-		cv::Point2f generateBlobGrid(const cv::Size& proj_img_size = cv::Size(setting::proj_width, setting::proj_height));
+		cv::Point2f generateBlobGrid(const cv::Size& proj_img_size = cv::Size(setting::proj::res_width, setting::proj::res_height));
 
 		//setup default blob detector params:  tweak these params based on the light condition and the actual display size
 		void setupBlobDetector();

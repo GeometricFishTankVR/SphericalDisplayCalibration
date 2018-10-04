@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <memory>
 
 #include <GL/glew.h>
 #include <glfw/glfw3.h>
@@ -31,10 +32,10 @@ namespace multi_proj_calib
 
 		public:
 
-			static const int m_pattern_rows = 10;
-			static const int m_pattern_cols = 8;
+			int m_pattern_rows;
+			int m_pattern_cols;
 
-			CalibRenderGL(uint width = setting::proj_width, uint height = setting::proj_height, uint win_count = 1, uint frm_rate = 120)
+			CalibRenderGL(uint width = setting::proj::res_width, uint height = setting::proj::res_height, uint win_count = 1, uint frm_rate = 120)
 				: m_width(width), m_height(height), m_num_window(win_count + 1) // always plus one for primary dbg monitor
 			{
 				int err;
@@ -46,6 +47,8 @@ namespace multi_proj_calib
 					std::cout << std::endl;
 					std::cout << "CalibRenderGL constructor fail to initialize GLFW" << std::endl;
 				}
+				m_pattern_rows = setting::proj::blobs_row;
+				m_pattern_cols = setting::proj::blobs_col;
 			}
 			~CalibRenderGL()
 			{
@@ -138,7 +141,7 @@ namespace multi_proj_calib
 				m_cc = cc;
 				m_kc = kc;
 				m_pc = pc;
-				m_cam_res = glm::vec2(setting::cam_width, setting::cam_height);
+				m_cam_res = glm::vec2(setting::camera::res_width, setting::camera::res_height);
 			}
 
 			bool reSetWindowSequence(const std::vector<int>& window_order);

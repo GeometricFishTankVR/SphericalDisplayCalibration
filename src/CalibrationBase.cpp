@@ -264,12 +264,19 @@ namespace multi_proj_calib
 
 	void CalibrationBase::drawDetectedPattern(cv::Mat& img, const std::vector<cv::Point2f>& pattern_pts, cv::Size pattern_size)
 	{
-		if (!pattern_pts.empty() && !img.empty())
+		if (img.empty())
+			throw std::runtime_error("drawDetectedPattern() fails to draw detected patterns: image can not be empty. ");
+		
+		m_pattern_size = cv::Size(setting::camera::checkerboard_row, setting::camera::checkerboard_col);
+		
+		if (!pattern_pts.empty())
 		{
-			drawChessboardCorners(img, pattern_size, pattern_pts, true);
-			circle(img, pattern_pts[0], 10, cv::Scalar(0, 0, 0), -1, 6);
-			arrowedLine(img, pattern_pts[0], pattern_pts[1], cv::Scalar(0, 0, 0), 2);
+			m_pattern_size = pattern_size;
 		}
+
+		drawChessboardCorners(img, m_pattern_size, pattern_pts, true);
+		circle(img, pattern_pts[0], 10, cv::Scalar(0, 0, 0), -1, 6);
+		arrowedLine(img, pattern_pts[0], pattern_pts[1], cv::Scalar(0, 0, 0), 2);
 	}
 }
 

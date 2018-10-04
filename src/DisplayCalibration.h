@@ -48,7 +48,7 @@ namespace multi_proj_calib
 		///***** Interface ******///
 		
 		DisplayCalibration( int proj_count) :
-			m_blobs(), m_cam_calib(), m_proj_calib(), m_camera(), m_projectors(proj_count, setting::proj_width, setting::proj_height), m_calibMethod(dp_calib::SemiAuto),m_num_proj(proj_count), m_MaxReprojErr(3) {}
+			m_blobs(), m_cam_calib(), m_proj_calib(), m_camera(), m_projectors(proj_count, setting::proj::res_width, setting::proj::res_height), m_calibMethod(dp_calib::SemiAuto),m_num_proj(proj_count), m_MaxReprojErr(3) {}
 
 		// initialize camera, projector, camcalib and projcalib
 		bool setup();

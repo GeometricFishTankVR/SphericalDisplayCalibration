@@ -21,7 +21,7 @@ namespace multi_proj_calib {
 	class ProjectorSys
 	{
 	public:
-		ProjectorSys(int projector_count = 1, int width = setting::proj_width, int height = setting::proj_height)
+		ProjectorSys(int projector_count = 1, int width = setting::proj::res_width, int height = setting::proj::res_height)
 			: m_render(width, height, projector_count), m_num_proj(projector_count), m_width(width), m_height(height)
 		{}
 		~ProjectorSys() {}
@@ -34,7 +34,7 @@ namespace multi_proj_calib {
 		//! load pattern 
 		void initPattern(render::RenderPattern pattern)
 		{
-			m_render.loadPattern(pattern, setting::blob_radius);
+			m_render.loadPattern(pattern, setting::display::blob_radius);
 		}
 
 		//! clear pattern
@@ -83,14 +83,16 @@ namespace multi_proj_calib {
 			// merge geometric and photometric result
 			// convert openCV data type to generic array
 			size_t size = pixel_pt.size();
+			if (size <= 0)
+				throw std::runtime_error("Pixel 3D array empty. Fail to init calibration result. ");
 			std::vector<float> texture_rgba(size * 4);	// OpenGL Texture in the format of RGBA
 			for (uint i = 0; i < size; i++)
 			{
 				texture_rgba[4 * i] = pixel_pt[i].x;
 				texture_rgba[4 * i + 1] = pixel_pt[i].y;
 				texture_rgba[4 * i + 2] = pixel_pt[i].z;
-				int idx_x = i / setting::proj_width;
-				int idx_y = i % setting::proj_width;
+				int idx_x = i / setting::proj::res_width;
+				int idx_y = i % setting::proj::res_width;
 				texture_rgba[4 * i + 3] = std::powf(alpha_mask.at<float>(idx_x, idx_y), 1/2.2f);
 
 			}

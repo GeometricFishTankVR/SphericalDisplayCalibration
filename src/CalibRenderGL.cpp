@@ -151,7 +151,8 @@ namespace multi_proj_calib
 		{
 			m_pattern = pattern;
 
-			glm::vec2 vertex_buffer[m_pattern_rows * m_pattern_cols];
+			std::shared_ptr<glm::vec2> vertex_buffer(new glm::vec2[m_pattern_rows * m_pattern_cols]);
+			//glm::vec2 vertex_buffer[m_pattern_rows * m_pattern_cols];
 
 			glfwMakeContextCurrent(*m_pwindow.cbegin()); // "primary" window which holds data
 
@@ -159,7 +160,7 @@ namespace multi_proj_calib
 			if (pattern == CIRCLE_GRID)
 			{
 				glPointSize(size);
-				m_num_vertices = createCircleGridVertices(vertex_buffer);
+				m_num_vertices = createCircleGridVertices(vertex_buffer.get());
 				// circle shader 
 				int err = m_calib_shader.init(file::src_path + "passthroughshader.vs", file::src_path + "circleshader.fs", 2);
 				m_calib_shader.loadUniformLocation("point_vertice", 0);
@@ -173,12 +174,12 @@ namespace multi_proj_calib
 				glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 				glEnable(GL_LINE_SMOOTH);
 				glLineWidth(3.0);
-				m_num_vertices = createLineGridVertices(vertex_buffer);
+				m_num_vertices = createLineGridVertices(vertex_buffer.get());
 			}
 			else if (pattern == ONE_CIRCLE)
 			{
 				glPointSize(size);
-				m_num_vertices = createOneCircleVertices(vertex_buffer);
+				m_num_vertices = createOneCircleVertices(vertex_buffer.get());
 				// one circle shader 
 				int err = m_calib_shader.init(file::src_path + "onecircleshader.vs", file::src_path + "circleshader.fs", 2);
 				if (err != 0) cout << " CalibRenderGL::loadPattern(): Fail to initialize one circle shader" << endl;
@@ -189,7 +190,7 @@ namespace multi_proj_calib
 			}
 			else if (pattern == TEXTURE)
 			{
-				m_num_vertices = createQuadVertices(vertex_buffer);
+				m_num_vertices = createQuadVertices(vertex_buffer.get());
 				// shader
 				int err = m_calib_shader.init(file::src_path + "passthroughshader.vs", file::src_path + "projshader.fs", 8);
 				if (err != 0) cout << " CalibRenderGL::loadPattern(): Fail to initialize projshader" << endl;
@@ -213,7 +214,7 @@ namespace multi_proj_calib
 			glGenBuffers(1, &m_pattern_vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, m_pattern_vbo);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer),
-				vertex_buffer, GL_STATIC_DRAW);
+				vertex_buffer.get(), GL_STATIC_DRAW);
 
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);

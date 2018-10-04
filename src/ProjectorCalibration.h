@@ -16,7 +16,7 @@ namespace multi_proj_calib
 	class ProjectorCalibration : public CalibrationBase 
 	{
 	public:
-		ProjectorCalibration():CalibrationBase(cv::Size(setting::proj_width, setting::proj_height), 20, CIRCLE_GRID, cv::Size(10,8), "click right mouse button to capture") {}
+		ProjectorCalibration():CalibrationBase(cv::Size(setting::proj::res_width, setting::proj::res_height), 20, CIRCLE_GRID, cv::Size(setting::camera::checkerboard_row, setting::camera::checkerboard_col), "click right mouse button to capture") {}
 		ProjectorCalibration(cv::Size resolution, CalibrationPattern pattern, cv::Size pattern_size): 
 			CalibrationBase(resolution, 20, pattern, pattern_size, "click right mouse button to capture")  {}
 		

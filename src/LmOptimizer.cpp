@@ -21,15 +21,6 @@ namespace multi_proj_calib
 			throw std::runtime_error("LmOptimizer does not have correct params input: params.size() != 10 * NumOfProj + 13");
 		}
 
-		unsigned int Nblobs = 0;
-		for (int i = 0; i < m_Nproj; i++)
-		{
-			if (cam_pts[i].size() > 0 && proj_pts[i].size() > 0)
-				Nblobs += cam_pts[i].size();
-			else
-				throw std::runtime_error("LmOptimizer does not have correct points input: cam_pts[i].size() or proj_pts[i].size() <=0");
-		}
-
 		m_campts.assign(cam_pts.begin(), cam_pts.end());
 		m_projpts.assign(proj_pts.begin(), proj_pts.end());
 		
@@ -37,33 +28,63 @@ namespace multi_proj_calib
 		real_1d_array p_vec;
 		p_vec.setcontent(Nparams, params.data());
 
-		//real_1d_array bndl, bndu;
-		//const double RATIO = 5;
-		//bndl.setlength(m_Nparams);
-		//bndu.setlength(m_Nparams);
-		//for (int i = 0; i < m_Nparams; i++)
-		//{
-		//	bndl[i] = params[i] - std::abs(params[i]) * RATIO;
-		//	bndu[i] = params[i] + std::abs(params[i]) * RATIO;
-		//}
+		bool restartOptim = false;
+		do {
 
-		const double epsx = 0.000000001;
-		const ae_int_t maxits = 0;
+			/// use the following code to set boundary of optimization if needed
+			//real_1d_array bndl, bndu;
+			//const double RATIO = 5;
+			//bndl.setlength(m_Nparams);
+			//bndu.setlength(m_Nparams);
+			//for (int i = 0; i < m_Nparams; i++)
+			//{
+			//	bndl[i] = params[i] - std::abs(params[i]) * RATIO;
+			//	bndu[i] = params[i] + std::abs(params[i]) * RATIO;
+			//}
 
-		minlmstate state;
-		minlmreport rep;
+			const double epsx = 0.000000001;
+			const ae_int_t maxits = 0;
 
-		try {
-			minlmcreatevj(Nblobs * 2, p_vec, state);
-			//minlmsetbc(state, bndl, bndu);
-			minlmsetacctype(state, 1);
-			minlmsetcond(state, epsx, maxits); // set stop condition: If MaxIts=0, the number of iterations is unlimited.
-			minlmoptimize(state, func_err, func_jac); // Running algorithm
-			minlmresults(state, p_vec, rep); // obtain results
-		}
-		catch (alglib::ap_error& e) { std::cerr << e.msg << std::endl; }
-		printf("%s\n", p_vec.tostring(6).c_str());
+			minlmstate state;
+			minlmreport rep;
 
+			unsigned int Nblobs = 0;
+			for (int i = 0; i < m_Nproj; i++)
+			{
+				if (m_campts[i].size() > 0 && m_projpts[i].size() > 0)
+					Nblobs += m_campts[i].size();
+				else
+					throw std::runtime_error("LmOptimizer does not have correct points input: cam_pts[i].size() or proj_pts[i].size() <=0");
+			}
+
+			try {
+				minlmcreatevj(Nblobs * 2, p_vec, state);
+				//minlmsetbc(state, bndl, bndu); // set boundary condition
+				minlmsetacctype(state, 1);
+				minlmsetcond(state, epsx, maxits); // set stop condition: If MaxIts=0, the number of iterations is unlimited.
+				try {
+					minlmoptimize(state, func_err, func_jac); // Running algorithm
+				}
+				catch (blob_not_intersect& e) // if blob not intersected with sphere: remove blobs and restart optim
+				{
+					std::cout << e.what() << std::endl << "restart optim" << std::endl;
+					restartOptim = true;
+					continue;
+				}
+				minlmresults(state, p_vec, rep); // obtain results
+			}
+			catch (alglib::ap_error& e) 
+			{ 
+				std::cerr << e.msg << std::endl; 
+				throw std::runtime_error("LmOptimizer Fail to Optim. ");
+			}
+			
+			std::cout << "Optimization Complete. New param: " << std::endl << p_vec.tostring(6).c_str() << std::endl;
+			restartOptim = false;
+
+		} while (restartOptim);
+
+		/// write back optimized params
 		params.clear();
 		for (int i = 0; i < p_vec.length(); i++)
 			params.push_back(p_vec[i]);
@@ -109,8 +130,12 @@ namespace multi_proj_calib
 		{
 			fi[i] = all_err[i];
 		}
+		
+		static unsigned int iter = 0;
+
 		double fx_err = cv::norm(all_err);
-		std::cout << "errV " << fx_err << std::endl;
+		iter += 1;
+		std::cout << "iter: "<<  iter << "norm_error:  " << fx_err << std::endl;
 	}
 
 	void LmOptimizer::func_jac(const alglib::real_1d_array &params, alglib::real_1d_array &fi, alglib::real_2d_array &jac, void *ptr)
@@ -224,7 +249,7 @@ namespace multi_proj_calib
 			0.f, fp[1], cp[1],
 			0.f, 0.f, 1.f);  // projector intrinsic matrix
 
-		Mat_<float> R_t;
+		Mat_<float> R_t; // 3x3
 		transpose(R, R_t);
 
 		Mat_<float> C = -R_t * T; // center position of projector: 3x1
@@ -254,25 +279,25 @@ namespace multi_proj_calib
 		Mat_<float> b = 2 * tempMat * V; // 1 by N
 		tempMat.release();
 
-		float c = std::pow(norm(C_S), 2) - std::pow(r, 2);
+		float c = std::pow(norm(C_S), 2) - std::pow(r, 2); // 1 by 1
 
 		Mat_<float> b2_4ac(1, N, CV_32FC1); // 1 by N
 		cv::pow(b, 2, tempMat);
 		b2_4ac = tempMat - 4 * a * c;
 		tempMat.release();
 
-		// TODO: remove the points if not intersect
-		//double minP, maxP;
-		//Point minIdx, maxIdx;
-		//cv::minMaxLoc(b2_4ac, &minP, &maxP, &minIdx, &maxIdx);
-		//while ( minP < 0)
-		//{
-		//	cam_pts.erase(cam_pts.begin()+ minIdx.x);
-		//	proj_pts.erase(proj_pts.begin() + minIdx.x);
-		//	
-		//	N--;
-		//	cv::minMaxLoc(b2_4ac, &minP, &maxP, &minIdx, &maxIdx);
-		//}
+		for (int i = b2_4ac.total() - 1; i >= 0; i--)
+		{
+			if (b2_4ac.at<float>(i) < 0)
+			{
+				std::cout << "blob not intersected. blob #" << i << ". blob removed in camera and projector pts. " << std::endl;
+				cam_pts.erase(cam_pts.begin() + i);
+				proj_pts.erase(proj_pts.begin() + i);
+			}
+		}
+
+		if (cam_pts.size() != N)
+			throw blob_not_intersect();
 
 		Mat_<float> lambda(1, N, CV_32FC1); // 1 by N
 		cv::sqrt(b2_4ac, tempMat);

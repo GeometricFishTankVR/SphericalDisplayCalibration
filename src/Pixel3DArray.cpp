@@ -198,10 +198,10 @@ namespace multi_proj_calib
 		cout << "===== computing alpha mask of projector " << to_string(m_deviceID) << "... =====" << endl;
 
 		vector<Mat> distance_mat(nProj); // distance mat: N projector, each projector has N distance mat (including its own)
-		distance_mat[pi] = Mat::zeros(Size(setting::proj_width, setting::proj_height), CV_32FC1); // intialize distance mat of projector i on its own contour
+		distance_mat[pi] = Mat::zeros(Size(setting::proj::res_width, setting::proj::res_height), CV_32FC1); // intialize distance mat of projector i on its own contour
 		float *ptr_dmat_pi = (float*)distance_mat[pi].data; //for quick access
 
-		m_alpha_mask = Mat::ones(Size(setting::proj_width, setting::proj_height), CV_32FC1);
+		m_alpha_mask = Mat::ones(Size(setting::proj::res_width, setting::proj::res_height), CV_32FC1);
 
 		/* find inliners and compute shortest distance to each contour */
 		for (uint pj = 0; pj < nProj; pj++) // for all other projectors
@@ -224,7 +224,7 @@ namespace multi_proj_calib
 				//cout << Tvecj << endl << endl;
 
 				
-				distance_mat[pj] = Mat::zeros(Size(setting::proj_width, setting::proj_height), CV_32FC1); // intialize distance mat of projector i on projector j's contour
+				distance_mat[pj] = Mat::zeros(Size(setting::proj::res_width, setting::proj::res_height), CV_32FC1); // intialize distance mat of projector i on projector j's contour
 
 				float *ptr_dmat_pj = (float*)distance_mat[pj].data; //for quick access 
 				unsigned char* ptr_mask_pj = (*pixelArrayIter[pj]).m_mask.data; //for quick access 
@@ -236,14 +236,14 @@ namespace multi_proj_calib
 				{
 					Point2f proj_pt = img_pti[k];
 					// is inliner
-					if (proj_pt.x >= 0 && proj_pt.x < setting::proj_width && proj_pt.y >= 0 && proj_pt.y < setting::proj_height)
+					if (proj_pt.x >= 0 && proj_pt.x < setting::proj::res_width && proj_pt.y >= 0 && proj_pt.y < setting::proj::res_height)
 					{
 						// within pj's mask
 						if (ptr_mask_pj[cvFloor(proj_pt.y) * (*pixelArrayIter[pj]).m_mask.step1() + cvFloor(proj_pt.x)]) 
 						{
 							// 2d coordinates in pi
-							uint idx_i = k / setting::proj_width;
-							uint idx_j = k % setting::proj_width;
+							uint idx_i = k / setting::proj::res_width;
+							uint idx_j = k % setting::proj::res_width;
 
 							uint idx_dmat_k = idx_i*distance_mat[pj].step1() + idx_j;
 
@@ -298,13 +298,13 @@ namespace multi_proj_calib
 
 	void Pixel3DArray::gammaCorrection(const float gamma)
 	{
-		if (m_alpha_mask.rows != setting::proj_height || m_alpha_mask.cols!= setting::proj_width)
+		if (m_alpha_mask.rows != setting::proj::res_height || m_alpha_mask.cols!= setting::proj::res_width)
 			throw std::runtime_error("Pixel3DArray::gammaCorrection() fails: alpha mask has wrong size. ");
 
 		float* p_alpha;
-		for (int idx_x = 0; idx_x < setting::proj_height; idx_x++)
+		for (int idx_x = 0; idx_x < setting::proj::res_height; idx_x++)
 		{
-			for (int idx_y = 0; idx_y < setting::proj_width; idx_y++)
+			for (int idx_y = 0; idx_y < setting::proj::res_width; idx_y++)
 			{
 				p_alpha = &m_alpha_mask.at<float>(idx_x, idx_y);
 				float alpha = *p_alpha;
@@ -328,18 +328,18 @@ namespace multi_proj_calib
 
 	void Pixel3DArray::createPixelMask()
 	{
-		if (m_pixel_pts.size() != setting::proj_height * setting::proj_width)
+		if (m_pixel_pts.size() != setting::proj::res_height * setting::proj::res_width)
 			throw std::runtime_error("Pixel3DArray::createPixelMask() fails: m_pixel_pts does not have the correct size. ");
 		
-		m_mask = Mat::zeros(Size(setting::proj_width, setting::proj_height), CV_8UC1);
+		m_mask = Mat::zeros(Size(setting::proj::res_width, setting::proj::res_height), CV_8UC1);
 		for (uint i = 0; i < m_pixel_pts.size(); i++)
 		{
-			int mask_j = i % setting::proj_width;
-			int mask_i = i / setting::proj_width;
+			int mask_j = i % setting::proj::res_width;
+			int mask_i = i / setting::proj::res_width;
 
 			Point3f pixel3_pt = m_pixel_pts.at(i);
 			
-			if (!utils::isInRange(mask_i, 0, setting::proj_height) || !utils::isInRange(mask_j, 0, setting::proj_width))
+			if (!utils::isInRange(mask_i, 0, setting::proj::res_height) || !utils::isInRange(mask_j, 0, setting::proj::res_width))
 				throw std::runtime_error("Pixel3DArray::createPixelMask() fails: index not in range. ");
 
 			if (cv::norm(pixel3_pt) > 0)
@@ -397,12 +397,12 @@ namespace multi_proj_calib
 			cout << endl;
 			if (m_deviceID == 0)
 			{
-				size = setting::cam_width * setting::cam_height * 3; /// camera
+				size = setting::camera::res_width * setting::camera::res_height * 3; /// camera
 				cout << "save geometry data of camera " << endl;
 			}
 			else
 			{
-				size = setting::proj_width * setting::proj_height * 3; /// projectors
+				size = setting::proj::res_width * setting::proj::res_height * 3; /// projectors
 				cout << "save geometry data of projector " << to_string(m_deviceID) << endl;
 			}
 
@@ -411,7 +411,7 @@ namespace multi_proj_calib
 		else if (dataType.compare("alpha") == 0)
 		{
 			p_float = (float *)m_alpha_mask.data;
-			size = setting::proj_width * setting::proj_height;
+			size = setting::proj::res_width * setting::proj::res_height;
 			cout << endl;
 			cout << "save alpha mask of projector " << to_string(m_deviceID) << endl;
 		}
@@ -452,7 +452,7 @@ namespace multi_proj_calib
 			cout << endl;
 			cout << "load alpha mask of " << file << endl;
 			
-			m_alpha_mask = Mat::zeros(Size(setting::proj_width, setting::proj_height), CV_32FC1);
+			m_alpha_mask = Mat::zeros(Size(setting::proj::res_width, setting::proj::res_height), CV_32FC1);
 			int i = 0;
 			while (ftell(pfile) < lsize)
 			{

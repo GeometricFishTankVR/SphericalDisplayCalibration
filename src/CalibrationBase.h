@@ -26,8 +26,8 @@ namespace multi_proj_calib
 	public:
 		CalibrationBase():  m_mincalib_frame(6), m_total_frame(20), m_reproj_err(0), m_square_size(1),
 							m_pattern(CHECKER_BOARD), m_cam_mat(cv::Mat::eye(3, 3, CV_64F)),
-							m_dist_coeff(cv::Mat::zeros(8, 1, CV_64F)), m_pattern_size(cv::Size(8, 6)),
-							m_img_size(cv::Size(setting::cam_width, setting::cam_height)), m_msg("press 's' to start") {}
+							m_dist_coeff(cv::Mat::zeros(8, 1, CV_64F)), m_pattern_size(cv::Size(setting::camera::checkerboard_row, setting::camera::checkerboard_col)),
+							m_img_size(cv::Size(setting::camera::res_width, setting::camera::res_height)), m_msg("press 's' to start") {}
 		CalibrationBase(cv::Size resolution, int total_frame, CalibrationPattern pattern, cv::Size pattern_size, std::string msg)
 			: m_img_size(resolution), m_total_frame(total_frame), m_pattern(pattern), m_pattern_size(pattern_size), 
 			  m_cam_mat(cv::Mat::eye(3, 3, CV_64F)), m_dist_coeff(cv::Mat::zeros(8, 1, CV_64F)), m_msg(msg) {}
@@ -53,13 +53,13 @@ namespace multi_proj_calib
 
 		void printIntrinsics();
 
-		void drawDetectedPattern(cv::Mat& img, const std::vector<cv::Point2f>& pattern_pts, cv::Size pattern_size);
+		void drawDetectedPattern(cv::Mat& img, const std::vector<cv::Point2f>& pattern_pts, cv::Size pattern_size = cv::Size());
 
 		void setImageParams(uint width, uint height);
 
 		void setFrameCount(uint total_frame = 20, uint min_calib_frame = 6);
 
-		void setPatternParams(CalibrationPattern pattern, int pattern_width = 8, int pattern_height = 6, int square_size = 1);
+		void setPatternParams(CalibrationPattern pattern, int pattern_width = setting::camera::checkerboard_row, int pattern_height = setting::camera::checkerboard_col, int square_size = 1);
 
 		uint currFrame() { return m_obj_pts.size(); }
 		uint getTotalFrame() const { return m_total_frame; }

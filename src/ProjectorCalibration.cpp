@@ -42,7 +42,7 @@ namespace multi_proj_calib
 		m_ready = calibrate(m_mincalib_frame); //calibration based on mincalib-frames
 		if (m_ready)
 		{
-			m_ready = clean(1.f, p_cam); //clean both proj and camera points
+			m_ready = clean(setting::proj::max_reproj_error, p_cam); //clean both proj and camera points
 			m_msg = "Img :" + to_string(currFrame()) + "/" + to_string(m_total_frame) + " Reproj Error: " + to_string(m_reproj_err);
 			if (m_ready && (p_cam->currFrame() == this->currFrame()) )
 				m_ready = computeProjectorExtrinsic(p_cam);

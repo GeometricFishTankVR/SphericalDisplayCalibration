@@ -18,7 +18,7 @@ namespace multi_proj_calib
 	public:
 		void updateBackGroundImg(const cv::Mat& img)
 		{
-			m_bg_img.create(img.rows, img.cols, setting::cv_pixel_format);
+			m_bg_img.create(img.rows, img.cols, setting::camera::cv_pixel_format);
 			m_bg_img = img.clone();
 		}
 		void substractBackGround(const cv::Mat& src, cv::Mat& dest)

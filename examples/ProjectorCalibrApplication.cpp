@@ -35,8 +35,7 @@ int main()
 	float dwidth(0), dheight(0);
 	projectors.getPatternDistancePixel(dwidth, dheight);
 	
-	Size blob_pattern, checkerbrd_pattern(8, 6);
-	projectors.getPatternSize(blob_pattern.width, blob_pattern.height);
+	Size blob_pattern(setting::blobs_row, setting::blobs_col), checkerbrd_pattern(setting::checkerboard_row, setting::checkerboard_col);
 
 	/* setup camera calibration */
 

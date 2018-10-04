@@ -129,13 +129,13 @@ namespace multi_proj_calib
 		key_pts.clear();
 		m_blob_detector.detect(substract_img, key_pts);
 		
-		cout << "keypoint "<<key_pts.size() << endl;
+		//cout << "keypoint "<<key_pts.size() << endl;
 
 		if ( key_pts.size() == 1)
 		{
 			m_detected_blob = key_pts[0].pt;
 			putText(img, to_string(m_projected_blob.x) + "," + to_string(m_projected_blob.y), m_detected_blob, 1, 1.f, Scalar(0, 0, 0));
-			cout << "blob number:" << getCurrBlobCnt() << endl;
+			//cout << "blob number:" << getCurrBlobCnt() << endl;
 			return true;
 		}
 		else

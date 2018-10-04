@@ -39,7 +39,7 @@ namespace multi_proj_calib
 		for (uint i = 0; i < m_num_proj; i++)
 		{
 			m_proj_calib[i].resetData();
-			m_proj_calib[i].setImageParams(setting::proj_width, setting::proj_height);
+			m_proj_calib[i].setImageParams(setting::proj::res_width, setting::proj::res_height);
 			if (m_calibMethod == dp_calib::SemiAuto) {
 				if (!m_proj_calib[i].loadCalibParams(file::data_path + file::projcalib_file[i]))
 					throw std::runtime_error("DisplayCalibration::setup(): Fail to load projector intrinsic file. ");
@@ -48,7 +48,7 @@ namespace multi_proj_calib
 
 		/* display calib setup */
      	m_curr_proj = 1;
-		m_MaxReprojErr = 3;
+		m_MaxReprojErr = setting::display::max_reproj_error;
 
 		m_cam_pts.clear();
 		m_proj_pts.clear();
@@ -58,11 +58,12 @@ namespace multi_proj_calib
 		m_reproj_err.resize(m_num_proj);
 
 		m_pixelarray.clear();
-		m_pixelarray.resize(m_num_proj+1);
+		m_pixelarray.resize(m_num_proj+1); // camera + n projectors
 
 		for (unsigned int i = 1; i <= m_num_proj; i++)
-			m_pixelarray[i].m_alpha_mask = Mat::ones(Size(setting::proj_width, setting::proj_height), CV_32FC1);
+			m_pixelarray[i].m_alpha_mask = Mat::ones(Size(setting::proj::res_width, setting::proj::res_height), CV_32FC1);
 
+		m_mode = dp_calib::idle;
 		m_cvwindow = "display calibration camera view";
 		namedWindow(m_cvwindow);
 		return true;
@@ -95,7 +96,7 @@ namespace multi_proj_calib
 		uint buf_width(0), buf_height(0);
 		m_camera.getImgSize(buf_width, buf_height);
 
-		Mat img_buf(buf_height, buf_width, setting::cv_pixel_format);
+		Mat img_buf(buf_height, buf_width, setting::camera::cv_pixel_format);
 		uint buf_size = buf_width * buf_height;
 
 		std::vector<int> projector_order(m_num_proj);
@@ -162,6 +163,7 @@ namespace multi_proj_calib
 		if (!m_projectors.setProjectorSequence(projector_order)) {
 			throw std::runtime_error("DisplayCalibration::calibratePair(): Fail to swap projectors. ");
 		}
+		m_mode = dp_calib::idle;
 		return true;		
 	}
 
@@ -178,13 +180,11 @@ namespace multi_proj_calib
 		uint buf_width(0), buf_height(0);
 		m_camera.getImgSize(buf_width, buf_height);
 		
-		Mat img_buf(buf_height, buf_width, setting::cv_pixel_format);
+		Mat img_buf(buf_height, buf_width, setting::camera::cv_pixel_format);
 		uint buf_size = buf_width * buf_height;
 
 		m_blobs.setupBlobDetector();
 		m_blobs.resetBlobs();
-
-		m_mode = idle;
 
 		bool keep_running = true;
 		bool found = false;
@@ -202,7 +202,7 @@ namespace multi_proj_calib
 		else
 		{
 			if (m_curr_proj <= m_num_proj)
-				cout << ">>[Double Click Left MouseButton] to proceed to projector" << to_string(m_curr_proj)<< endl;
+				cout << "Calibrate for Projector #" << to_string(m_curr_proj)<< endl;
 		}
 
 		try {
@@ -240,7 +240,7 @@ namespace multi_proj_calib
 				case project:
 					proj_blob = m_blobs.generateBlobGrid();
 					m_projectors.setBlobPos(proj_blob.x, proj_blob.y);
-					cout << proj_blob << endl;
+					//cout << proj_blob << endl;
 					m_mode = dp_calib::detect;
 					break;
 				case dp_calib::detect:
@@ -444,18 +444,21 @@ namespace multi_proj_calib
 				m_proj_pts.push_back(proj_pts);
 				m_obj_pts.push_back(obj_pts);
 				m_proj_calib[proj_idx].setExtrinsic(proj_rmat, proj_tvec);
+				m_mode = dp_calib::start;
 				return true;
 			}
 			else
 			{
-				cout << "DisplayCalibration::estimatePairExtrinsic() fails: reprojection error larger than the threshold of" << m_MaxReprojErr <<" : restart by [double click mouse left button]" << endl;
+				cout << "DisplayCalibration::estimatePairExtrinsic() fails: reprojection error larger than the threshold of" << m_MaxReprojErr << endl << ">> Restart by [Double Click Mouse Left Button]" << endl;
+				m_mode = dp_calib::idle;
 				return false;
 			}
 		}
 		// if does not find valid solution
 		else
 		{
-			cout << "DisplayCalibration::estimatePairExtrinsic() fails: no extrinsic solution found, all points are behind two cameras." << endl;
+			cout << "DisplayCalibration::estimatePairExtrinsic() fails: no extrinsic solution found, all points are behind two cameras." << endl << ">> Restart by [Double Click Mouse Left Button]"  << endl;
+			m_mode = dp_calib::idle;
 			return false;
 		}
 	}
@@ -581,10 +584,8 @@ namespace multi_proj_calib
 		params.push_back(distort_vec.at<double>(3));
 		
 		/* 2. Optimize param */
-		try {
-			m_optimizer.runNonLinearOptimize(m_cam_pts, m_proj_pts, params);
-		}
-		catch (std::runtime_error& e) { std::cerr << e.what() << std::endl; }
+
+		m_optimizer.runNonLinearOptimize(m_cam_pts, m_proj_pts, params);
 
 		/* 3. Put optimized param back */
 		updateParams(false, params);
@@ -603,12 +604,12 @@ namespace multi_proj_calib
 
 			if (i == 0) { /// camera
 				pCalib = &m_cam_calib;
-				end_pixel = Point2i(setting::cam_width, setting::cam_height);
+				end_pixel = Point2i(setting::camera::res_width, setting::camera::res_height);
 				cout << "===== computing pixel position of camera " << "... =====" << endl;
 			}
 			else { /// projectors
 				pCalib = &m_proj_calib[i - 1];
-				end_pixel = Point2i(setting::proj_width, setting::proj_height);
+				end_pixel = Point2i(setting::proj::res_width, setting::proj::res_height);
 				cout << "===== computing pixel position of projector " << to_string(i) << "... =====" << endl;
 			}
 
@@ -651,7 +652,7 @@ namespace multi_proj_calib
 		uint buf_width(0), buf_height(0);
 		m_camera.getImgSize(buf_width, buf_height);
 
-		Mat img_buf(buf_height, buf_width, setting::cv_pixel_format);
+		Mat img_buf(buf_height, buf_width, setting::camera::cv_pixel_format);
 		uint buf_size = buf_width * buf_height;
 
 		// fsm flags
@@ -766,7 +767,7 @@ namespace multi_proj_calib
 		cout << "sphere center: " << m_sphere_pose << endl << endl;
 		cout << "sphere pose residue:" << residue << endl;
 		cout << endl;
-		if (residue > .1f) 
+		if (residue > setting::display::max_spherepose_error) 
 			cout << "Warning: sphere fit residue too large; bad blobs have been included; recalibrate it." << endl << endl;;
 		return residue; 	//residue should be around than 0.05, no more than 0.1
 	}
@@ -939,7 +940,7 @@ namespace multi_proj_calib
 
 	void dp_calib::displayOnMouse(int event, int x, int y, int flags, void* ptr)
 	{
-		DisplayCalibration* p_disp_calib = (DisplayCalibration*)ptr;
+		DisplayCalibration* p_disp_calib = static_cast<DisplayCalibration*>(ptr);
 		if (event == EVENT_RBUTTONDBLCLK)
 		{
 			p_disp_calib->setFsmMode(finish);
@@ -947,7 +948,7 @@ namespace multi_proj_calib
 	}
 	void dp_calib::pairCalibOnMouse(int event, int x, int y, int flags, void* ptr)
 	{
-		DisplayCalibration* p_disp_calib = (DisplayCalibration*)ptr;
+		DisplayCalibration* p_disp_calib = static_cast<DisplayCalibration*>(ptr);
 		
 		if (event == EVENT_LBUTTONDBLCLK)
 		{

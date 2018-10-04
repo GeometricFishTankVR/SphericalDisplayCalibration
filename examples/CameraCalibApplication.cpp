@@ -41,7 +41,6 @@ int main()
 	p_cam_calib->createPatternObjectPoints();
 
 	/* calibration implementation */
-	cv::Size pattern_size = Size(8, 6); // specify the size of chess board pattern
 	
 	CameraFsmStatus mode = idle;
 	bool keep_running = true;
@@ -60,12 +59,12 @@ int main()
 		switch (mode)
 		{
 		case detect:
-			p_cam_calib->setPatternParams(CHECKER_BOARD, pattern_size.width, pattern_size.height, 1);
+			p_cam_calib->setPatternParams(CHECKER_BOARD);
 			found = p_cam_calib->detectPattern(img_buf, feature_pts);
 			if (found)
 			{
 				p_cam_calib->add(feature_pts, p_cam_calib->getPresetObjectPoints());
-				p_cam_calib->drawDetectedPattern(img_buf, feature_pts, pattern_size);
+				p_cam_calib->drawDetectedPattern(img_buf, feature_pts);
 				//cv::imwrite("Gray_Image" + std::to_string(p_cam_calib->currFrame()) + ".jpg", img_buf); 
 			}
 			if ( p_cam_calib->currFrame() >= p_cam_calib->getMinCalibFrame() )
@@ -76,7 +75,7 @@ int main()
 		case wait:
 			if (timeOut(DELAY_SEC, prev_time_stamp))
 				mode = detect;
-			p_cam_calib->drawDetectedPattern(img_buf, feature_pts, pattern_size);
+			p_cam_calib->drawDetectedPattern(img_buf, feature_pts);
 			break;
 		case calibrate:
 			p_cam_calib->runCalibration();
