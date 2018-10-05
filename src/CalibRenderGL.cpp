@@ -151,16 +151,17 @@ namespace multi_proj_calib
 		{
 			m_pattern = pattern;
 
-			std::shared_ptr<glm::vec2> vertex_buffer(new glm::vec2[m_pattern_rows * m_pattern_cols]);
-			//glm::vec2 vertex_buffer[m_pattern_rows * m_pattern_cols];
+			std::vector<glm::vec2> vertex_buffer;
 
 			glfwMakeContextCurrent(*m_pwindow.cbegin()); // "primary" window which holds data
 
 			//----- initialize vao, vbo -----
 			if (pattern == CIRCLE_GRID)
 			{
+				vertex_buffer.resize(m_pattern_rows * m_pattern_cols);
+
 				glPointSize(size);
-				m_num_vertices = createCircleGridVertices(vertex_buffer.get());
+				m_num_vertices = createCircleGridVertices(vertex_buffer.data());
 				// circle shader 
 				int err = m_calib_shader.init(file::src_path + "passthroughshader.vs", file::src_path + "circleshader.fs", 2);
 				m_calib_shader.loadUniformLocation("point_vertice", 0);
@@ -170,16 +171,20 @@ namespace multi_proj_calib
 			else if (pattern == LINE_GRID)
 			{
 				/* create grid pattern */
+				vertex_buffer.resize(m_pattern_rows * m_pattern_cols);
+
 				glEnable(GL_BLEND);
 				glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 				glEnable(GL_LINE_SMOOTH);
 				glLineWidth(3.0);
-				m_num_vertices = createLineGridVertices(vertex_buffer.get());
+				m_num_vertices = createLineGridVertices(vertex_buffer.data());
 			}
 			else if (pattern == ONE_CIRCLE)
 			{
+				vertex_buffer.resize(1);
+
 				glPointSize(size);
-				m_num_vertices = createOneCircleVertices(vertex_buffer.get());
+				m_num_vertices = createOneCircleVertices(vertex_buffer.data());
 				// one circle shader 
 				int err = m_calib_shader.init(file::src_path + "onecircleshader.vs", file::src_path + "circleshader.fs", 2);
 				if (err != 0) cout << " CalibRenderGL::loadPattern(): Fail to initialize one circle shader" << endl;
@@ -190,7 +195,9 @@ namespace multi_proj_calib
 			}
 			else if (pattern == TEXTURE)
 			{
-				m_num_vertices = createQuadVertices(vertex_buffer.get());
+				vertex_buffer.resize(6);
+
+				m_num_vertices = createQuadVertices(vertex_buffer.data());
 				// shader
 				int err = m_calib_shader.init(file::src_path + "passthroughshader.vs", file::src_path + "projshader.fs", 8);
 				if (err != 0) cout << " CalibRenderGL::loadPattern(): Fail to initialize projshader" << endl;
@@ -213,8 +220,8 @@ namespace multi_proj_calib
 			//vbo
 			glGenBuffers(1, &m_pattern_vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, m_pattern_vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer),
-				vertex_buffer.get(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(*vertex_buffer.data()) * m_num_vertices,
+				vertex_buffer.data(), GL_DYNAMIC_DRAW);
 
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
@@ -346,14 +353,15 @@ namespace multi_proj_calib
 		}
 		int CalibRenderGL::createQuadVertices(glm::vec2* p_vertex)
 		{		
+			// two triangles
 			p_vertex[0].x = -1.f;
 			p_vertex[0].y = -1.f;
 
-			p_vertex[1].x =  1.f;
+			p_vertex[1].x = 1.f;
 			p_vertex[1].y = -1.f;
 
-			p_vertex[2].x =  1.f;
-			p_vertex[2].y =  1.f;
+			p_vertex[2].x = 1.f;
+			p_vertex[2].y = 1.f;
 
 			p_vertex[3].x = -1.f;
 			p_vertex[3].y = -1.f;
@@ -364,6 +372,8 @@ namespace multi_proj_calib
 			p_vertex[5].x = 1.f;
 			p_vertex[5].y = 1.f;
 			return 6;
+
+			return 4;
 		}
 		int CalibRenderGL::createLineGridVertices(glm::vec2* p_vertex)
 		{

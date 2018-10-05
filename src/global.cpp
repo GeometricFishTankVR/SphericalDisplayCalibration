@@ -21,6 +21,7 @@ namespace multi_proj_calib
 			extern int blobs_col = 8; //pattern size
 			extern int blobs_row = 10;
 			extern double max_reproj_error = 1;
+			extern int frame_rate = 120;
 		}
 
 		namespace display

@@ -12,7 +12,6 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
-#include <memory>
 
 #include <GL/glew.h>
 #include <glfw/glfw3.h>
@@ -167,6 +166,7 @@ namespace multi_proj_calib
 			glm::vec3 m_kc;
 			glm::vec2 m_pc;
 			glm::vec2 m_cam_res; // camera resolution
+			//std::vector<glm::vec2> m_vertex_buffer;
 
 			uint m_num_vertices;
 			uint m_width;

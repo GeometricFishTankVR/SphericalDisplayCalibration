@@ -94,7 +94,6 @@ namespace multi_proj_calib {
 				int idx_x = i / setting::proj::res_width;
 				int idx_y = i % setting::proj::res_width;
 				texture_rgba[4 * i + 3] = std::powf(alpha_mask.at<float>(idx_x, idx_y), 1/2.2f);
-
 			}
 
 			float* p_float = texture_rgba.data();

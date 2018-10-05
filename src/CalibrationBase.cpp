@@ -266,10 +266,12 @@ namespace multi_proj_calib
 	{
 		if (img.empty())
 			throw std::runtime_error("drawDetectedPattern() fails to draw detected patterns: image can not be empty. ");
-		
+		if (pattern_pts.empty())
+			return;
+
 		m_pattern_size = cv::Size(setting::camera::checkerboard_row, setting::camera::checkerboard_col);
 		
-		if (!pattern_pts.empty())
+		if (pattern_size.width != 0 && pattern_size.height != 0)
 		{
 			m_pattern_size = pattern_size;
 		}

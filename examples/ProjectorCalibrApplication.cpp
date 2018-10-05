@@ -28,14 +28,14 @@ int main()
 
 	/* setup projector control */
 
-	ProjectorSys projectors(1, setting::proj_width, setting::proj_height);
+	ProjectorSys projectors(1, setting::proj::res_width, setting::proj::res_height);
 	projectors.initPattern(render::CIRCLE_GRID);
 	projectors.startProj(PROJECTOR_1);
 
 	float dwidth(0), dheight(0);
 	projectors.getPatternDistancePixel(dwidth, dheight);
 	
-	Size blob_pattern(setting::blobs_row, setting::blobs_col), checkerbrd_pattern(setting::checkerboard_row, setting::checkerboard_col);
+	Size blob_pattern(setting::proj::blobs_row, setting::proj::blobs_col), checkerbrd_pattern(setting::camera::checkerboard_row, setting::camera::checkerboard_col);
 
 	/* setup camera calibration */
 
@@ -54,7 +54,7 @@ int main()
 	if (p_proj_calib == NULL) { cout << "Fail to initial p_proj_calib" << endl; return -1; }
 
 	p_proj_calib->resetData();
-	p_proj_calib->setImageParams(setting::proj_width, setting::proj_height);
+	p_proj_calib->setImageParams(setting::proj::res_width, setting::proj::res_height);
 	p_proj_calib->setPatternParams(CIRCLE_GRID, blob_pattern.width, blob_pattern.height, 1);
 	p_proj_calib->setPatternPixel(dwidth, dheight);
 	p_proj_calib->setFrameCount(15, 12);

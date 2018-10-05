@@ -449,16 +449,18 @@ namespace multi_proj_calib
 			}
 			else
 			{
-				cout << "DisplayCalibration::estimatePairExtrinsic() fails: reprojection error larger than the threshold of" << m_MaxReprojErr << endl << ">> Restart by [Double Click Mouse Left Button]" << endl;
 				m_mode = dp_calib::idle;
+				std::string msg = "DisplayCalibration::estimatePairExtrinsic() fails: reprojection error larger than the threshold of " + std::to_string(m_MaxReprojErr);
+				throw std::runtime_error(msg);
 				return false;
 			}
 		}
 		// if does not find valid solution
 		else
 		{
-			cout << "DisplayCalibration::estimatePairExtrinsic() fails: no extrinsic solution found, all points are behind two cameras." << endl << ">> Restart by [Double Click Mouse Left Button]"  << endl;
 			m_mode = dp_calib::idle;
+			std::string msg = "DisplayCalibration::estimatePairExtrinsic() fails: no extrinsic solution found, all points are behind two cameras.";
+			throw std::runtime_error(msg);
 			return false;
 		}
 	}

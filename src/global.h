@@ -34,6 +34,7 @@ namespace multi_proj_calib
 			extern int blobs_col; //pattern size
 			extern int blobs_row;
 			extern double max_reproj_error;
+			extern int frame_rate;
 		}
 
 		namespace display
