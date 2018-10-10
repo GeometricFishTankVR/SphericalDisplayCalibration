@@ -131,11 +131,6 @@ namespace multi_proj_calib
 			fi[i] = all_err[i];
 		}
 		
-		static unsigned int iter = 0;
-
-		double fx_err = cv::norm(all_err);
-		iter += 1;
-		std::cout << "iter: "<<  iter << " norm_error:  " << fx_err << std::endl;
 	}
 
 	void LmOptimizer::func_jac(const alglib::real_1d_array &params, alglib::real_1d_array &fi, alglib::real_2d_array &jac, void *ptr)
@@ -192,6 +187,11 @@ namespace multi_proj_calib
 				jac[i][j] = Jac.at<double>(i, j);
 			}
 		}
+		static unsigned int iter = 0;
+
+		double fx_err = cv::norm(all_err);
+		iter += 1;
+		std::cout << "iter: " << iter << " norm_error:  " << fx_err << std::endl;
 	}
 
 

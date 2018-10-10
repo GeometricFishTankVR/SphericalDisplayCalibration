@@ -2,10 +2,16 @@
 
 namespace multi_proj_calib
 {
-	using namespace cv;
+	using cv::Mat;
+	using cv::Mat_;
+	using cv::Size;
+	using cv::Point2f;
+	using cv::Point3f;
+
 	using std::cout;
 	using std::endl;
 	using std::to_string;
+	using std::vector;
 
 	void Pixel3DArray::raySphereIntersection( CalibrationBase* pcalib, const cv::Mat_<double>& sphere_pose, const cv::Point2i& start_pixel, const cv::Point2i& end_pixel)
 	{
@@ -349,13 +355,13 @@ namespace multi_proj_calib
 
 	void Pixel3DArray::findContourFromMask()
 	{
-		vector<vector<Point>> contours;
-		vector<Vec4i> hierarchy;
+		vector<vector<cv::Point>> contours;
+		vector<cv::Vec4i> hierarchy;
 		
 		Mat img_pad;
 		img_pad = m_mask.clone();
 
-		findContours(img_pad, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+		findContours(img_pad, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
 		if (!contours.empty())
 			m_contours2d = contours[0];
 	}

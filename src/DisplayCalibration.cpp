@@ -2,10 +2,18 @@
 
 namespace multi_proj_calib
 {
-	using namespace cv;
+	using cv::Mat;
+	using cv::Mat_;
+	using cv::Size;
+	using cv::Point2f;
+	using cv::Point3f;
+	using cv::Point3d;
+
 	using std::cout;
 	using std::endl;
 	using std::to_string;
+	using std::vector;
+	using std::string;
 
 	bool DisplayCalibration::setup()
 	{
@@ -65,7 +73,7 @@ namespace multi_proj_calib
 
 		m_mode = dp_calib::idle;
 		m_cvwindow = "display calibration camera view";
-		namedWindow(m_cvwindow);
+		cv::namedWindow(m_cvwindow);
 		return true;
 	}
 
@@ -124,12 +132,12 @@ namespace multi_proj_calib
 						cout << endl;
 						cout << "Start to display a blob on activated projector " << proj_name << endl;
 						cout << ">>[Press Space] if the Projector Number is right; Or [Press the Correct Number] if wrong. " << endl;
-						cvWaitKey(20);
+						//cvWaitKey(20);
 						m_mode = project;
 						break;
 					case project:
-						m_projectors.setBlobPos(600, 400);
-						ch = cvWaitKey(20);
+						m_projectors.setBlobPos(setting::proj::res_width/2, setting::proj::res_height/2);
+						ch = cvWaitKey(200);
 						if (ch == ' ')
 						{
 							projector_order[i] = (int)proj_name;
@@ -343,7 +351,7 @@ namespace multi_proj_calib
 		essen_mat = fmat.findEssentialMat(cam_blobs_nml, proj_blobs_nml, stereo_recon::Sampson);
 
 		essen_mat.convertTo(essen_mat, CV_32FC1);
-		SVD::compute(essen_mat, S, U, Vt);
+		cv::SVD::compute(essen_mat, S, U, Vt);
 
 		Mat_<float> W = (Mat_<float>(3, 3) << 0.f, -1.f, 0.f, 1.f, 0.f, 0.f, 0.f, 0.f, 1.f);
 
@@ -409,6 +417,8 @@ namespace multi_proj_calib
 			cout << endl;
 			cout << "extrinsic solution found: solution #" << to_string(sol_num) << endl;
 			
+			using cv::Range;
+
 			/* compute reprojection error of triangulation: in two views */
 			Mat_<float> cam_rvec;
 			cv::Rodrigues(cam_rmat, cam_rvec);
@@ -469,7 +479,9 @@ namespace multi_proj_calib
 
 	bool DisplayCalibration::updateParams(bool isFromMatlab, std::vector<double> new_param )
 	{
-		std::vector<Mat_<float>> proj_param;
+		using cv::FileStorage;
+
+		vector<Mat_<float>> proj_param;
 		Mat_<float> sphere_param;
 		Mat_<float> cam_param;
 		proj_param.resize(m_num_proj);
@@ -596,6 +608,8 @@ namespace multi_proj_calib
 	}
 	void DisplayCalibration::computePixel3D()
 	{		
+		using cv::Point2i;
+
 		uint i(0);
 
 		while (i <= m_num_proj)
@@ -698,6 +712,8 @@ namespace multi_proj_calib
 	bool DisplayCalibration::saveExtrinsics(const std::string& file_name)
 	{
 	
+		using cv::FileStorage;
+
 		FileStorage fs(file_name, FileStorage::WRITE);
 
 		for (unsigned int proj_idx = 0; proj_idx < m_num_proj; proj_idx++)
@@ -746,7 +762,7 @@ namespace multi_proj_calib
 					cout << "proj" << proj_idx+1 << " sphere fit residue: " << residue << endl;
 
 					Mat scale; 	// initial guess of scale between projectors
-					solve(sphere_pose[proj_idx], sphere_pose[0], scale, DECOMP_SVD);
+					cv::solve(sphere_pose[proj_idx], sphere_pose[0], scale, cv::DECOMP_SVD);
 					scale.convertTo(scale, CV_32FC1);
 					
 					m_proj_calib[proj_idx].getExtrinsicTvec() = m_proj_calib[proj_idx].getExtrinsicTvec() *  scale.at<float>(0);
@@ -876,6 +892,7 @@ namespace multi_proj_calib
 
 	bool DisplayCalibration::loadBlobData(const std::string& file_name)
 	{
+		using cv::FileStorage;
 		Mat_<float> cam_blob, proj_blob;
 		FileStorage fs(file_name, FileStorage::READ);
 
@@ -900,7 +917,7 @@ namespace multi_proj_calib
 	{
 		CV_Assert(cam_blobs_nml.size() == proj_blobs_nml.size());
 		const int num_pts = (int) cam_blobs_nml.size();
-		Matx34d extrin_mat = proj_proj_mat;
+		cv::Matx34d extrin_mat = proj_proj_mat;
 
 		obj_pts.clear();
 		for (int i = 0; i < num_pts; i++)
@@ -908,7 +925,7 @@ namespace multi_proj_calib
 			Point3d cam_pt_h(cam_blobs_nml[i].x, cam_blobs_nml[i].y, 1.);
 			Point3d proj_pt_h(proj_blobs_nml[i].x, proj_blobs_nml[i].y, 1.);
 			Mat_<double> X = linearLSTriangulation(cam_pt_h, cam_proj_mat, proj_pt_h, proj_proj_mat);
-			Mat_<double> X1 = Mat(extrin_mat) * Mat(Matx41d(X(0), X(1), X(2), 1.));
+			Mat_<double> X1 = Mat(extrin_mat) * Mat(cv::Matx41d(X(0), X(1), X(2), 1.));
 
 			if (X(2) > 0 && X1(2) > 0)
 				obj_pts.push_back(Point3f(X(0), X(1), X(2)));
@@ -918,24 +935,24 @@ namespace multi_proj_calib
 		return true;
 	}
 
-	Mat_<double> DisplayCalibration::linearLSTriangulation(Point3d u, Matx34d P, Point3d u1, Matx34d P1)
+	Mat_<double> DisplayCalibration::linearLSTriangulation(Point3d u, cv::Matx34d P, Point3d u1, cv::Matx34d P1)
 	{
 		//u: homogenous image point (u,v,1)
 		//P: camera 1 matrix
 		//u1: homogenous image point in 2nd camera
 		//P1: camera 2 matrix
-		Matx43d A(u.x*P(2, 0) - P(0, 0), u.x*P(2, 1) - P(0, 1), u.x*P(2, 2) - P(0, 2),
+		cv::Matx43d A(u.x*P(2, 0) - P(0, 0), u.x*P(2, 1) - P(0, 1), u.x*P(2, 2) - P(0, 2),
 			u.y*P(2, 0) - P(1, 0), u.y*P(2, 1) - P(1, 1), u.y*P(2, 2) - P(1, 2),
 			u1.x*P1(2, 0) - P1(0, 0), u1.x*P1(2, 1) - P1(0, 1), u1.x*P1(2, 2) - P1(0, 2),
 			u1.y*P1(2, 0) - P1(1, 0), u1.y*P1(2, 1) - P1(1, 1), u1.y*P1(2, 2) - P1(1, 2)
 		);
-		Matx41d B(-(u.x*P(2, 3) - P(0, 3)),
+		cv::Matx41d B(-(u.x*P(2, 3) - P(0, 3)),
 			-(u.y*P(2, 3) - P(1, 3)),
 			-(u1.x*P1(2, 3) - P1(0, 3)),
 			-(u1.y*P1(2, 3) - P1(1, 3)));
 
 		Mat_<double> X;
-		solve(A, B, X, DECOMP_SVD);
+		cv::solve(A, B, X, cv::DECOMP_SVD);
 
 		return X;
 	}
@@ -945,7 +962,7 @@ namespace multi_proj_calib
 	void dp_calib::displayOnMouse(int event, int x, int y, int flags, void* ptr)
 	{
 		DisplayCalibration* p_disp_calib = static_cast<DisplayCalibration*>(ptr);
-		if (event == EVENT_RBUTTONDBLCLK)
+		if (event == cv::EVENT_RBUTTONDBLCLK)
 		{
 			p_disp_calib->setFsmMode(finish);
 		}
@@ -954,20 +971,20 @@ namespace multi_proj_calib
 	{
 		DisplayCalibration* p_disp_calib = static_cast<DisplayCalibration*>(ptr);
 		
-		if (event == EVENT_LBUTTONDBLCLK)
+		if (event == cv::EVENT_LBUTTONDBLCLK)
 		{
 			cout << endl;
 			cout << "===== detect and project patterns of projector" << to_string(p_disp_calib->getCurrProjector()) << "=====" << endl;
 			p_disp_calib->setFsmMode(start);
 		}
-		else if (event == EVENT_RBUTTONDBLCLK)
+		else if (event == cv::EVENT_RBUTTONDBLCLK)
 		{
 			cout << endl;
 			cout << "===== end of detecting and projecting patterns of projector" << to_string(p_disp_calib->getCurrProjector()) << "=====" << endl;
 			p_disp_calib->setFsmMode(finish);
 			p_disp_calib->setCurrProjector(p_disp_calib->getTotalProjector() + 1);
 		}
-		else if (event == EVENT_LBUTTONDOWN)
+		else if (event == cv::EVENT_LBUTTONDOWN)
 		{
 			if (!p_disp_calib->isBoundCircleFound())
 			{

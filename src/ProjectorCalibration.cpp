@@ -2,9 +2,15 @@
 
 namespace multi_proj_calib
 {
-	using namespace std;
-	using namespace cv;
-	
+	using std::vector;
+	using std::cout;
+	using std::endl;
+	using std::to_string;
+
+	using cv::Mat;
+	using cv::Point2f;
+	using cv::Point3f;
+
 	bool ProjectorCalibration::clean(float max_reproj_err, CalibrationBase* p_calib)
 	{
 		int removed = 0;
@@ -64,7 +70,9 @@ namespace multi_proj_calib
 		Mat cam_dist_coeff = p_cam->getDistortCoeff();
 		Mat fund_mat, essen_mat;
 
-		double rms = stereoCalibrate(m_obj_pts, p_cam->getImagePoints(), this->m_img_pts, cam_cam_mat, cam_dist_coeff, proj_cam_mat, proj_dist_coeff, m_img_size, m_r3x3_proj2cam, m_t3x1_proj2cam, essen_mat, fund_mat, TermCriteria(TermCriteria::COUNT + TermCriteria::EPS, 30, 1e-6), CALIB_FIX_INTRINSIC);
+		using cv::TermCriteria;
+
+		double rms = cv::stereoCalibrate(m_obj_pts, p_cam->getImagePoints(), this->m_img_pts, cam_cam_mat, cam_dist_coeff, proj_cam_mat, proj_dist_coeff, m_img_size, m_r3x3_proj2cam, m_t3x1_proj2cam, essen_mat, fund_mat, TermCriteria(TermCriteria::COUNT + TermCriteria::EPS, 30, 1e-6), cv::CALIB_FIX_INTRINSIC);
 		cout << endl;
 		cout << "Camera-projector extrinsic computed: " << endl;
 		cout << "rotation mat: " << endl << m_r3x3_proj2cam << endl << endl;

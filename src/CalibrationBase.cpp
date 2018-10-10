@@ -3,12 +3,17 @@
 namespace multi_proj_calib
 {
 	
-	using namespace cv;
+	using cv::Mat;
+	using cv::Point2f;
+
 	using std::cout;
 	using std::endl;
+	using std::string;
 
 	bool CalibrationBase::calibrate(uint frame_count)
 	{
+		using cv::checkRange;
+
 		if ( currFrame() >= frame_count)
 		{
 			static int calib_flag = 0;
@@ -33,7 +38,7 @@ namespace multi_proj_calib
 				}
 			}
 
-			double rms = calibrateCamera(m_obj_pts, m_img_pts, m_img_size, m_cam_mat, m_dist_coeff, m_rot_vecs, m_transl_vecs, calib_flag, TermCriteria(TermCriteria::COUNT + TermCriteria::EPS, 50, 1e-6));
+			double rms = calibrateCamera(m_obj_pts, m_img_pts, m_img_size, m_cam_mat, m_dist_coeff, m_rot_vecs, m_transl_vecs, calib_flag, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 50, 1e-6));
 						
 			cout << endl;
 			cout << "m_cam_mat" << m_cam_mat << endl << endl;
@@ -156,7 +161,7 @@ namespace multi_proj_calib
 
 		for (int i = 0; i < (int)m_obj_pts.size(); i++) {
 			projectPoints(Mat(m_obj_pts[i]), m_rot_vecs[i], m_transl_vecs[i], m_cam_mat, m_dist_coeff, image_points2);
-			double err = norm(Mat(m_img_pts[i]), Mat(image_points2), CV_L2);
+			double err = cv::norm(Mat(m_img_pts[i]), Mat(image_points2), CV_L2);
 			int n = m_obj_pts[i].size();
 			m_perview_err[i] = sqrt(err * err / n);
 			total_err += err * err;
@@ -171,8 +176,11 @@ namespace multi_proj_calib
 
 	void CalibrationBase::saveCalibParams(const string& file_name)
 	{
-		std::string fileToSave;
+		using cv::FileStorage;
+		using cv::Range;
 
+		std::string fileToSave;
+		
 		std::ifstream filetemp(file_name.c_str());
 		if (filetemp.good())
 		{
@@ -231,6 +239,8 @@ namespace multi_proj_calib
 
 	bool CalibrationBase::loadCalibParams(const std::string& file_name)
 	{
+		using cv::FileStorage;
+
 		FileStorage fs(file_name, FileStorage::READ);
 		
 		if (!fs.isOpened())

@@ -2,9 +2,15 @@
 
 namespace multi_proj_calib
 {
+	using cv::Mat;
+	using cv::Point2f;
+	using cv::Point3f;
+	using cv::Size;
 
-	using namespace cv;
-	using namespace std;
+	using std::vector;
+	using std::cout;
+	using std::endl;
+	using std::to_string;
 
 	bool CameraCalibration::detectPattern(const Mat& img, vector<Point2f>& img_pts)
 	{
@@ -24,8 +30,8 @@ namespace multi_proj_calib
 			m_blob_detector.set_params("convexity", 0.8f, 1.f);
 			m_blob_detector.set_params("inertia", 0.1f, 1.f);
 			
-			found = findCirclesGrid(img, m_pattern_size, img_pts,
-				CALIB_CB_SYMMETRIC_GRID, new SimpleBlobDetector(m_blob_detector.params));	
+			found = cv::findCirclesGrid(img, m_pattern_size, img_pts,
+				cv::CALIB_CB_SYMMETRIC_GRID, new cv::SimpleBlobDetector(m_blob_detector.params));	
 			break;
 		default:
 			found = false;
@@ -38,10 +44,11 @@ namespace multi_proj_calib
 			{
 				Mat img_gray;
 				if (img.type() != CV_8UC1 && img.type() != CV_16UC1)
-					cvtColor(img, img_gray, COLOR_BGR2GRAY);
+					cvtColor(img, img_gray, cv::COLOR_BGR2GRAY);
 				else
 					img_gray = img;
 
+				using cv::TermCriteria;
 				cornerSubPix(img_gray, img_pts, Size(5, 5), Size(-1, -1),
 					TermCriteria(TermCriteria::COUNT + TermCriteria::EPS, 40, 0.005));
 			}

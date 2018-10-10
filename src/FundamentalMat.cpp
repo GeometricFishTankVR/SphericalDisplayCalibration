@@ -1,10 +1,19 @@
 #include "FundamentalMat.h"
 
-using namespace std;
-using namespace cv;
-
 namespace stereo_recon
 {
+	using std::vector;
+	using std::cout;
+	using std::endl;
+
+	using cv::Mat;
+	using cv::Mat_;
+	using cv::Matx;
+	using cv::Vec;
+	using cv::Point3f;
+	using cv::Point2f;
+	using cv::Point2d;
+
 	cv::Mat_<float> FundamentalMat::findFundamentalMat(const vector<Point2f>& pts1, const vector<Point2f>& pts2, DistanceType type)
 	{
 		CV_Assert(pts1.size() == pts2.size());
@@ -18,8 +27,8 @@ namespace stereo_recon
 		vector<Point3f> pts1_h;
 		vector<Point3f> pts2_h;
 
-		convertPointsToHomogeneous(pts1, pts1_h);
-		convertPointsToHomogeneous(pts2, pts2_h);
+		cv::convertPointsToHomogeneous(pts1, pts1_h);
+		cv::convertPointsToHomogeneous(pts2, pts2_h);
 
 		Mat_<float> best_F = Mat::zeros(3, 3, CV_32FC1);
 		Mat_<float> curr_F = Mat::zeros(3, 3, CV_32FC1);
@@ -93,7 +102,7 @@ dowhile:
 		do 
 		{
 			findFundamentalMat(pts1, pts2, type);
-			SVD::compute(m_F, S, U, Vt);
+			cv::SVD::compute(m_F, S, U, Vt);
 			s_ratio = S(1) / S(0);
 			cout << "S ratio=" << s_ratio << endl;
 			cnt++;
@@ -136,8 +145,8 @@ dowhile:
 
 		for (i = 0; i < count; i++)
 		{
-			scale1 += norm(Point2d(m1[i].x - m1c.x, m1[i].y - m1c.y));
-			scale2 += norm(Point2d(m2[i].x - m2c.x, m2[i].y - m2c.y));
+			scale1 += cv::norm(Point2d(m1[i].x - m1c.x, m1[i].y - m1c.y));
+			scale2 += cv::norm(Point2d(m2[i].x - m2c.x, m2[i].y - m2c.y));
 		}
 
 		scale1 *= t;
@@ -177,16 +186,18 @@ dowhile:
 
 		if (i < 8)
 			return 0;
+		
+		using cv::Matx33d;
 
 		Matx33d F0(V.val + 9 * 8); // take the last column of v as a solution of Af = 0
 
 								   // make F0 singular (of rank 2) by decomposing it with SVD,
 								   // zeroing the last diagonal element of W and then composing the matrices back.
-		Vec3d w;
+		cv::Vec3d w;
 		Matx33d U;
 		Matx33d Vt;
 
-		SVD::compute(F0, w, U, Vt);
+		cv::SVD::compute(F0, w, U, Vt);
 		w[2] = 0.;
 
 		F0 = U*Matx33d::diag(w)*Vt;

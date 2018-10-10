@@ -2,10 +2,14 @@
 
 namespace multi_proj_calib
 {
-	using namespace cv;
+	using cv::Mat;
+	using cv::Point2f;
+	using cv::Size;
+
 	using std::cout;
 	using std::endl;
 	using std::to_string;
+	using std::vector;
 
 	bool BoundingCircle::detectBoundary()
 	{
@@ -31,7 +35,7 @@ namespace multi_proj_calib
 
 	void BoundingCircle::drawBoundaryCircle(Mat& img)
 	{
-		circle(img, (cv::Point2i)m_bound_center, m_bound_radius, Scalar(255, 255, 255), 5);
+		circle(img, (cv::Point2i)m_bound_center, m_bound_radius, cv::Scalar(255, 255, 255), 5);
 	}
 
 	void BoundingCircle::linearLSCircle()
@@ -125,25 +129,25 @@ namespace multi_proj_calib
 		);
 		double high_thresh_val = otsu_thresh_val,
 			lower_thresh_val = otsu_thresh_val * 0.5;
-		Canny(blur_img, edges, lower_thresh_val, high_thresh_val);
+		cv::Canny(blur_img, edges, lower_thresh_val, high_thresh_val);
 
 		/// Apply the dilation and erosion operation: make edges stronger and merge the gap
-		Mat element_dil = getStructuringElement(MORPH_ELLIPSE,
+		Mat element_dil = cv::getStructuringElement(cv::MORPH_ELLIPSE,
 			Size(5, 5));
-		Mat element_ero = getStructuringElement(MORPH_ELLIPSE,
+		Mat element_ero = cv::getStructuringElement(cv::MORPH_ELLIPSE,
 			Size(3, 3));
-		dilate(edges, edges, element_dil);
-		erode(edges, edges, element_ero);
+		cv::dilate(edges, edges, element_dil);
+		cv::erode(edges, edges, element_ero);
 
 		/// Now detect the bounding circle: use minradius and maxradius to filter false detections
-		vector<Vec3f> circles;
+		vector<cv::Vec3f> circles;
 		int num_pts = cv::sum(edges)[0];
 		/// modify the coefficients if no bounding circle is detected
 		double param2 = 2e-5 * num_pts + 10;
 
 		const int minradius = 400;
 		const int maxradius = 600;
-		HoughCircles(edges, circles, CV_HOUGH_GRADIENT, 2, blur_img.rows / 8, high_thresh_val, param2, minradius, maxradius);
+		cv::HoughCircles(edges, circles, CV_HOUGH_GRADIENT, 2, blur_img.rows / 8, high_thresh_val, param2, minradius, maxradius);
 
 		//dbg
 		//static int cnt = 0;

@@ -2,10 +2,16 @@
 
 namespace multi_proj_calib
 {
-	using namespace cv;
 	using std::cout;
 	using std::endl;
 	using std::to_string;
+	using std::vector;
+	using std::string;
+
+	using cv::Mat;
+	using cv::Point2f;
+	using cv::Size;
+
 
 	/* BlobPattern Class */
 
@@ -125,7 +131,7 @@ namespace multi_proj_calib
 
 		m_blob_detector.set_thre(otsu_thresh_val_low*0.1f, otsu_thresh_val_low*1.2f);
 
-		vector<KeyPoint> key_pts;
+		vector<cv::KeyPoint> key_pts;
 		key_pts.clear();
 		m_blob_detector.detect(substract_img, key_pts);
 		
@@ -134,7 +140,7 @@ namespace multi_proj_calib
 		if ( key_pts.size() == 1)
 		{
 			m_detected_blob = key_pts[0].pt;
-			putText(img, to_string(m_projected_blob.x) + "," + to_string(m_projected_blob.y), m_detected_blob, 1, 1.f, Scalar(0, 0, 0));
+			putText(img, to_string(m_projected_blob.x) + "," + to_string(m_projected_blob.y), m_detected_blob, 1, 1.f, cv::Scalar(0, 0, 0));
 			//cout << "blob number:" << getCurrBlobCnt() << endl;
 			return true;
 		}
@@ -144,7 +150,7 @@ namespace multi_proj_calib
 
 	void BlobPattern::drawDetectedBlob(Mat& img)
 	{
-		circle(img, m_cam_blobs.back(), 50, Scalar(255, 255, 255));
+		circle(img, m_cam_blobs.back(), 50, cv::Scalar(255, 255, 255));
 	}
 	 
 	void BlobPattern::thresholdImage(const cv::Mat& src_img, cv::Mat& dest_img, int thre)
@@ -161,6 +167,7 @@ namespace multi_proj_calib
 
 	void BlobPattern::saveBlobData(string file_name)
 	{
+		using cv::FileStorage;
 		FileStorage fs(file_name, FileStorage::WRITE);
 
 		if (m_cam_blobs.size() != m_proj_blobs.size())
