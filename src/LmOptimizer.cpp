@@ -79,7 +79,7 @@ namespace multi_proj_calib
 				throw std::runtime_error("LmOptimizer Fail to Optim. ");
 			}
 			
-			std::cout << "Optimization Complete. New param: " << std::endl << p_vec.tostring(6).c_str() << std::endl;
+			std::cout << std::endl << "Optimization Complete. New param: " << std::endl << p_vec.tostring(6).c_str() << std::endl;
 			restartOptim = false;
 
 		} while (restartOptim);
@@ -135,7 +135,7 @@ namespace multi_proj_calib
 
 		double fx_err = cv::norm(all_err);
 		iter += 1;
-		std::cout << "iter: "<<  iter << "norm_error:  " << fx_err << std::endl;
+		std::cout << "iter: "<<  iter << " norm_error:  " << fx_err << std::endl;
 	}
 
 	void LmOptimizer::func_jac(const alglib::real_1d_array &params, alglib::real_1d_array &fi, alglib::real_2d_array &jac, void *ptr)

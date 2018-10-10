@@ -30,6 +30,8 @@
 *.exe
 *.out
 *.app
+*.pdb
+*.bat
 
 # Custom
 *.bin

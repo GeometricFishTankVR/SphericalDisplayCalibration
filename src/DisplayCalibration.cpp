@@ -207,6 +207,7 @@ namespace multi_proj_calib
 
 		try {
 			/* start to project and detect */
+			uint blob_not_detected(0);
 			while (keep_running)
 			{
 				if (m_camera.grabImg(img_buf.data, buf_size))
@@ -251,7 +252,7 @@ namespace multi_proj_calib
 						m_blobs.drawDetectedBlob(img_buf);
 					}
 					else
-						cout << "blob not detected" << endl;
+						blob_not_detected++;
 
 					if (m_blobs.getCurrBlobIdx().width >= m_blobs.getGridBlobSize().width && m_blobs.getCurrBlobIdx().height >= m_blobs.getGridBlobSize().height)
 					{
@@ -272,6 +273,7 @@ namespace multi_proj_calib
 				case finish:
 					m_projectors.setBlobPos(0.f, 0.f);
 					m_projectors.clearProj(proj_name);
+					cout << blob_not_detected << " out of " << setting::display::blobs_col * setting::display::blobs_row << " blobs not detected. "<< endl;
 					keep_running = false;
 					break;
 				case idle:
