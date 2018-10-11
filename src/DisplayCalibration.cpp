@@ -19,6 +19,9 @@ namespace multi_proj_calib
 	{
 		uint buf_width(0), buf_height(0);
 
+		m_cvwindow = "display calibration camera view";
+		cv::namedWindow(m_cvwindow);
+
 		/* camera setup */
 		m_camera.getImgSize(buf_width, buf_height);
 		/* tweak these params based on the lighting condition */
@@ -72,8 +75,7 @@ namespace multi_proj_calib
 			m_pixelarray[i].m_alpha_mask = Mat::ones(Size(setting::proj::res_width, setting::proj::res_height), CV_32FC1);
 
 		m_mode = dp_calib::idle;
-		m_cvwindow = "display calibration camera view";
-		cv::namedWindow(m_cvwindow);
+
 		return true;
 	}
 
@@ -213,96 +215,90 @@ namespace multi_proj_calib
 				cout << "Calibrate for Projector #" << to_string(m_curr_proj)<< endl;
 		}
 
-		try {
-			/* start to project and detect */
-			uint blob_not_detected(0);
-			while (keep_running)
+		/* start to project and detect */
+		uint blob_not_detected(0);
+		while (keep_running)
+		{
+			if (m_camera.grabImg(img_buf.data, buf_size))
 			{
-				if (m_camera.grabImg(img_buf.data, buf_size))
+				throw std::runtime_error("DisplayCalibration::calibratePair(): Fail to copy image buffer");
+			}
+			Point2f proj_blob;
+			switch (m_mode)
+			{
+			case start:
+				/// set the bounding circle by clicking four points on the circle
+				if (!m_blobs.isBoundCircleFound())
 				{
-					throw std::runtime_error("DisplayCalibration::calibratePair(): Fail to copy image buffer");
-				}
-				Point2f proj_blob;
-				switch (m_mode)
-				{
-				case start:
-					/// set the bounding circle by clicking four points on the circle
-					if (!m_blobs.isBoundCircleFound())
-					{
-						found = m_blobs.detectBoundingCircle();
-						if (found)
-						{
-							m_mode = project;
-							m_blobs.drawBoundingCircle(img_buf);
-							m_blobs.setBackGroundImg(img_buf);
-						}
-						else
-							m_mode = start;
-					}
-					else
+					found = m_blobs.detectBoundingCircle();
+					if (found)
 					{
 						m_mode = project;
 						m_blobs.drawBoundingCircle(img_buf);
 						m_blobs.setBackGroundImg(img_buf);
 					}
-					break;
-				case project:
-					proj_blob = m_blobs.generateBlobGrid();
-					m_projectors.setBlobPos(proj_blob.x, proj_blob.y);
-					//cout << proj_blob << endl;
-					m_mode = dp_calib::detect;
-					break;
-				case dp_calib::detect:
-					found = m_blobs.detectSingleBlob(img_buf);
+					else
+						m_mode = start;
+				}
+				else
+				{
+					m_mode = project;
+					m_blobs.drawBoundingCircle(img_buf);
+					m_blobs.setBackGroundImg(img_buf);
+				}
+				break;
+			case project:
+				proj_blob = m_blobs.generateBlobGrid();
+				m_projectors.setBlobPos(proj_blob.x, proj_blob.y);
+				//cout << proj_blob << endl;
+				m_mode = dp_calib::detect;
+				break;
+			case dp_calib::detect:
+				found = m_blobs.detectSingleBlob(img_buf);
+				if (found)
+				{
+					m_blobs.addBlob();
+					m_blobs.drawDetectedBlob(img_buf);
+				}
+				else
+					blob_not_detected++;
+
+				if (m_blobs.getCurrBlobIdx().width >= m_blobs.getGridBlobSize().width && m_blobs.getCurrBlobIdx().height >= m_blobs.getGridBlobSize().height)
+				{
+					found = m_blobs.cleanBlobs();
 					if (found)
 					{
-						m_blobs.addBlob();
-						m_blobs.drawDetectedBlob(img_buf);
+						m_blobs.saveBlobData(file::data_path+file::blob_file[proj_name - 1]);
+						cout << to_string(m_blobs.getCurrBlobCnt()) + " blobs saved in xml file" << endl;
+						ready = true;
 					}
 					else
-						blob_not_detected++;
-
-					if (m_blobs.getCurrBlobIdx().width >= m_blobs.getGridBlobSize().width && m_blobs.getCurrBlobIdx().height >= m_blobs.getGridBlobSize().height)
-					{
-						found = m_blobs.cleanBlobs();
-						if (found)
-						{
-							m_blobs.saveBlobData(file::data_path+file::blob_file[proj_name - 1]);
-							cout << to_string(m_blobs.getCurrBlobCnt()) + " blobs saved in xml file" << endl;
-							ready = true;
-						}
-						else
-							cout << "DisplayCalibration::calibratePair(): error in cleanBlobs()" << endl;
-						m_mode = finish;
-					}
-					else
-						m_mode = project;
-					break;
-				case finish:
-					m_projectors.setBlobPos(0.f, 0.f);
-					m_projectors.clearProj(proj_name);
-					cout << blob_not_detected << " out of " << setting::display::blobs_col * setting::display::blobs_row << " blobs not detected. "<< endl;
-					keep_running = false;
-					break;
-				case idle:
-					break;
-				default:
-					break;
+						cout << "DisplayCalibration::calibratePair(): error in cleanBlobs()" << endl;
+					m_mode = finish;
 				}
-				cv::imshow(m_cvwindow, img_buf);
-				m_camera.showControlDlg();
+				else
+					m_mode = project;
+				break;
+			case finish:
+				m_projectors.setBlobPos(0.f, 0.f);
+				m_projectors.clearProj(proj_name);
+				cout << blob_not_detected << " out of " << setting::display::blobs_col * setting::display::blobs_row << " blobs not detected. "<< endl;
+				keep_running = false;
+				break;
+			case idle:
+				break;
+			default:
+				break;
+			}
+			cv::imshow(m_cvwindow, img_buf);
+			m_camera.showControlDlg();
 
-				m_projectors.projPattern(proj_name);
-				m_projectors.projFlush(proj_name);
+			m_projectors.projPattern(proj_name);
+			m_projectors.projFlush(proj_name);
 
-				cvWaitKey(85); // syc problem arises when delay is small
-			} /* end of loop */
-		}
-		catch (const std::runtime_error& e)
-		{
-			std::cerr << e.what() << std::endl;
-			ready = false;
-		}
+			cvWaitKey(85); // syc problem arises when delay is small
+		} /* end of loop */
+
 		m_projectors.stopProj(proj_name);
 		cv::setMouseCallback(m_cvwindow, NULL, NULL);
 

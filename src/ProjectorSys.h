@@ -9,7 +9,9 @@
 #define CALIB_PROJECTOR_H_
 
 #include <vector>
+
 #include <opencv2/opencv.hpp>
+
 #include "CalibRenderGL.h"
 #include "global.h"
 

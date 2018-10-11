@@ -8,8 +8,9 @@
 #ifndef CALIB_CALIBRATION_CAMERA_H_
 #define CALIB_CALIBRATION_CAMERA_H_
 
-#include "CalibrationBase.h"
 #include "opencv2/features2d/features2d.hpp"
+
+#include "CalibrationBase.h"
 #include "BlobDetector.hpp"
 #include "global.h"
 

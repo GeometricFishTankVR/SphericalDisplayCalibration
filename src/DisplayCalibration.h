@@ -148,8 +148,8 @@ namespace multi_proj_calib
 		BlobPattern m_blobs; // projected pattern
 		std::vector<Pixel3DArray> m_pixelarray;  // store and compute geometry data and alpha mask for each projector
 
-		std::vector<std::vector<cv::Point2f>> m_cam_pts; //todo: may not in use
-		std::vector<std::vector<cv::Point2f>> m_proj_pts;//todo: may not in use
+		std::vector<std::vector<cv::Point2f>> m_cam_pts; 
+		std::vector<std::vector<cv::Point2f>> m_proj_pts;
 		std::vector<std::vector<cv::Point3f>> m_obj_pts;
 		std::vector<std::vector<float>> m_reproj_err;
 	};

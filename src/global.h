@@ -8,8 +8,9 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <opencv2/opencv.hpp>
 #include <string>
+
+#include <opencv2/opencv.hpp>
 
 namespace multi_proj_calib
 {

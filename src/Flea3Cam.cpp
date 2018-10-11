@@ -211,7 +211,6 @@ namespace multi_proj_calib {
 			return -1;
 		}
 		cout << "Frame rate is " << std::fixed << std::setprecision(2) << m_prop.absValue << " fps" << endl;
-
 		m_cam_control.Connect(&m_cam);
 		m_cam_control.Hide();
 		return 0;
@@ -248,13 +247,16 @@ namespace multi_proj_calib {
 
 	int Flea3Cam::grabImg(unsigned char* dest_mat, const size_t & num)
 	{
-		m_err = m_cam.RetrieveBuffer(&m_raw_img);
-		if (m_err != PGRERROR_OK)
-		{
-			printError();
-			return -1;
+		try {
+			m_err = m_cam.RetrieveBuffer(&m_raw_img);
+			if (m_err != PGRERROR_OK)
+			{
+				printError();
+				return -1;
+			}
+			memcpy(dest_mat, m_raw_img.GetData(), num);
 		}
-		memcpy(dest_mat, m_raw_img.GetData(), num);
+		catch (...) { std::cerr << "Fail to Grab Flea3Cam Image" << std::endl; return -1; }
 		return 0;
 	}
 
@@ -319,7 +321,13 @@ namespace multi_proj_calib {
 
 	void Flea3Cam::showControlDlg()
 	{
-		if (m_cam_control.IsVisible() == false)
-			m_cam_control.Show();
+		try {
+			if (m_cam_control.IsVisible() == false)
+				m_cam_control.Show();
+		}
+		catch (...)
+		{
+			std::cerr << "Fail to show camera control Dlg" << std::endl;
+		}
 	}
 }

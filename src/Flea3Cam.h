@@ -8,8 +8,7 @@
 #ifndef CALIB_FLEA3CAM_H_
 #define CALIB_FLEA3CAM_H_
 
-#include "stdio.h"
-
+#include <stdio.h>
 #include <iostream>
 #include <sstream>
 #include <iomanip>

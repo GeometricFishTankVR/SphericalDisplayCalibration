@@ -8,13 +8,14 @@
 #ifndef CALIB_FUNDAMENTAL_MAT_H
 #define CALIB_FUNDAMENTAL_MAT_H
 
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
 #include <vector>
 #include <algorithm>
 #include <math.h>
 #include <stdlib.h> 
 #include <time.h>  
+
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
 
 namespace stereo_recon
 {

@@ -16,7 +16,8 @@ int main()
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;
-		return -1; 
+		if(disp_calib.cleanup())
+			return -1; 
 	}
 
 	try {
@@ -60,7 +61,8 @@ int main()
 	}
 	catch (const std::runtime_error& e) {
 		std::cerr << e.what() << std::endl;
-		return -1;
+		if (disp_calib.cleanup())
+			return -1;
 	}
 
 	if(disp_calib.cleanup())
