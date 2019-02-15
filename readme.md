@@ -18,7 +18,7 @@ Q. Zhou, G. Miller, K. Wu and S. Fels. [Automatic calibration of a multiple-proj
     - Note: 
       - Example of Step1 is in the file *CameraCalibApplication.cpp*
       - Example of Step2-6 is in the file *SphericalDisplayCalibApplication.cpp*. ~~Currently Step3 and Step4 are temporarily implemented in MATLAB with the file *main_automatic_calib.m*.~~ Updated: all steps are implemented in cpp files. 
-      - Assumption of this approach: the principle point of the projector is at the bottom center of the image plane. If the assumption does not hold, please use the Semi-automatic approach. Also, since the initial guess solely depends on the detection of projected patterns, the error of the detection may make the initial guess far away from the global minimum in the non-linear optimization, causing the final solution to be a local minimum.
+      - Assumption of this approach: the principle point of the projector is at the bottom center of the image plane. If the assumption does not hold, please use the Semi-automatic approach. Also, since the initial guess solely depends on the detection of projected patterns, the error of the detection may make the initial guess far away from the global minimum in the non-linear optimization, causing the final solution to be a local minimum. **It is strongly recommended to use semi-automatic approach to calibrate an initial guess for projectors first. **
   - Semi-Automatic Calibration Approach
     - Step1. Calibrate the camera intrinsic
     - Step2. Calibrate the projector intrinsic
