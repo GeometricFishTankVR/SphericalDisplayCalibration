@@ -43,6 +43,7 @@ int main()
 			disp_calib.estimateSpherePose();
 			disp_calib.saveExtrinsics(file::data_path + file::extrinsic_file);
 		}
+
 		/// nonlinear optimization
 		disp_calib.lmOptimize();
 			
@@ -53,7 +54,7 @@ int main()
 		disp_calib.computeAlphaMask();
 
 		/// Normalize and save the geometry or blending data
-		disp_calib.saveCalibrationResult("C:\\Users\\HCT-SPHEREE\\Documents\\SPHEREE-RESEARCH\\source-code\\siggraph-branch\\Unity\\VolumetricDisplay\\CalibrationFiles\\");
+		disp_calib.saveCalibrationResult("C:\\Users\\HCT-SPHEREE\\Documents\\SPHEREE-RESEARCH\\source-code\\visualfid-branch\\Unity\\VolumetricDisplay\\CalibrationFiles\\");
 
 		/// display the calibrated result
 		disp_calib.displayCorrectedPattern();

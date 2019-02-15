@@ -13,7 +13,7 @@
 global DATA_DIR;
 
 DATA_DIR = '..\data';
-PROJ_RESOLUTION = [1280 800]; %% Modify the resolution based on the projector 
+PROJ_RESOLUTION = [1024 768]; %% Modify the resolution based on the projector 
 
 
 %% Initial Guess %%
@@ -26,7 +26,7 @@ cc_cam = [cam_mat(1,3) cam_mat(2,3)];
 % ------ read from blob data ------ %
 N_PROJ = length(dir([DATA_DIR '\Proj*PairBlobData.xml']));
 if N_PROJ <= 0
-    error("Can't find blob data Proj*PairBlobData.xml");
+    error('Cant find blob data Proj*PairBlobData.xml');
 end
 x_cam = cell(1,N_PROJ);
 x_proj = cell(1,N_PROJ);
@@ -45,7 +45,8 @@ om_p = zeros(3,1,N_PROJ);
 fc_proj = zeros(2,1,N_PROJ);
 cc_proj = zeros(2,1,N_PROJ);
 
-for idx = 1: N_PROJ
+for idx = 1 : N_PROJ
+    disp(['compute Proj ' num2str(idx)]);
     [K_p(:,:,idx),R_p(:,:,idx),T_p(:,:,idx)] = func_computeProjectorInitialGuess(... 
                                                 x_cam{idx}, x_proj{idx}, ...
                                                 cam_mat, cam_dist,...
@@ -107,7 +108,7 @@ end
 [ sphere_p, r_p, residue ] = func_sphere_fit_WLS( Xc_n, diag(W_n),false);
 disp(['residue:' num2str(residue)]);
 
-if residue > 0.2
+if residue > 10
     disp('Residue too large, Re-run the script');
     clear;
     main_automatic_calib;
@@ -115,6 +116,7 @@ if residue > 0.2
 end
 [ sphere_p, r_p, residue ] = func_sphere_fit_WLS( Xc_n, diag(W_n),true);
 title('Reconstructed 3D points of all projector: initial guess');
+
 
 %% lsqnonlin refinement %%
 
@@ -144,11 +146,11 @@ ub = p0 + abs(p0) * ratio;
 % setup lsqnonlin()
 options = optimoptions('lsqnonlin','Display','iter');
 options.Jacobian = 'on';
-options.MaxIter = 200;
-options.InitDamping = 500;
+options.MaxIter = 500;
+options.InitDamping = 1000;
 
 % Invoke optimizer
-[p,resnorm] = lsqnonlin(@multi_proj_func_F, p0, lb, ub, options);   
+[p,resnorm] = lsqnonlin(@multi_proj_func_F, p0, [], [], options);   
 % save to xml
 if(isreal(p))
     saveParamsOpencvXml( p, [DATA_DIR '\new_params']);
