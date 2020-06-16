@@ -102,7 +102,7 @@ namespace multi_proj_calib
 		ready = calibrate(m_mincalib_frame);
 		if (ready)
 		{
-			ready = clean(.9f);
+			ready = clean(setting::camera::max_reproj_error);
 			m_msg = "Img :" + to_string(currFrame()) + "/" + to_string(m_mincalib_frame) + " Reproj Error: " + to_string(m_reproj_err);
 			cout << "reprojection error: " << m_reproj_err << ((m_reproj_err > setting::camera::max_reproj_error) ? " larger" : " smaller") << " than max reprojection error" << setting::camera::max_reproj_error << std::endl;
 		}
